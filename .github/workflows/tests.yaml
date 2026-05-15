@@ -19,3 +19,8 @@ jobs:
 
       - name: Execute Brew Test Bot
         run: brew test-bot --only-formulae cammgh/math/gcl
+
+      - name: Open Debug SSH Session on Failure
+        # This hook opens only if the previous compilation block failed
+        uses: mxschmitt/action-tmate@v3
+        if: always()
