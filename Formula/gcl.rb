@@ -7,9 +7,6 @@ class Gcl < Formula
       revision: "3fc457ca07c17625cc5772caebeacbfca26d8a6a" # Replace with the exact Git commit hash
   license "GPL-2.0-or-later"
 
-  # Force Homebrew to drop its sandboxed shims and use the standard shell environment paths
-  env :std
-
   # Core dependencies needed to compile GCL on macOS
   depends_on "gmp"
   depends_on "readline"
