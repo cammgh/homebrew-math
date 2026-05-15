@@ -24,3 +24,4 @@ jobs:
         # This hook opens only if the previous compilation block failed
         if: always()
         uses: mxschmitt/action-tmate@v3
+
