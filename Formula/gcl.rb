@@ -7,13 +7,15 @@ class Gcl < Formula
       revision: "3fc457ca07c17625cc5772caebeacbfca26d8a6a" # Replace with the exact Git commit hash
   license "GPL-2.0-or-later"
 
-  # Explicitly ignores libx11 during strict dynamic linkage analysis checks
-  ignore_linkage "libx11"
-
   # Core dependencies needed to compile GCL on macOS
   depends_on "gmp"
-  depends_on "libX11"
   depends_on "readline"
+
+  # --- Full X11 Stack Dependency Declarations ---
+  # Listing the complete sub-library array resolves the 'indirect linkage' audit failure
+  depends_on "libx11"
+  depends_on "libxext"
+  depends_on "xorgproto"
 
   def install
 
