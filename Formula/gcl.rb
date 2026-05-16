@@ -3,8 +3,8 @@ class Gcl < Formula
   homepage "https://gnu.org/software/gcl"
   # Pull directly from the upstream GNU Savannah repository
   url "git://git.sv.gnu.org/gcl.git",
-      tag:      "Vertion_2_7_2pre_homebrew2", # Replace with your target version tag
-      revision: "3fc457ca07c17625cc5772caebeacbfca26d8a6a" # Replace with the exact Git commit hash
+      tag:      "Version_2_7_2pre22", # Replace with your target version tag
+      revision: "cb4202cf8669a1ac431548f148f5f3cc27865615" # Replace with the exact Git commit hash
   license "GPL-2.0-or-later"
 
   # Core dependencies needed to compile GCL on macOS
@@ -14,9 +14,8 @@ class Gcl < Formula
   # Listing the complete sub-library array resolves the 'indirect linkage' audit failure
   depends_on "libx11"
   depends_on "libxext"
-  depends_on "xorgproto"
-
   depends_on "readline"
+  depends_on "xorgproto"
 
   def install
     # 1. Establish the local, writable lockfile pool inside the temporary build sandbox

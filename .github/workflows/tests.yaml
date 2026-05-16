@@ -18,10 +18,13 @@ jobs:
         uses: Homebrew/actions/setup-homebrew@main
 
       - name: Execute Brew Test Bot
-        run: brew test-bot --only-formulae cammgh/math/gcl
+        run: |
+          brew test-bot --only-cleanup-before
+          brew test-bot --only-setup
+          brew test-bot --only-formulae --testing-formulae=gcl cammgh/math/gcl
 
       - name: Open Debug SSH Session on Failure
         # This hook opens only if the previous compilation block failed
-        if: always()
+        if: failure()
         uses: mxschmitt/action-tmate@v3
 
