@@ -9,7 +9,6 @@ class Gcl < Formula
 
   # Core dependencies needed to compile GCL on macOS
   depends_on "gmp"
-  depends_on "readline"
 
   # --- Full X11 Stack Dependency Declarations ---
   # Listing the complete sub-library array resolves the 'indirect linkage' audit failure
@@ -17,8 +16,9 @@ class Gcl < Formula
   depends_on "libxext"
   depends_on "xorgproto"
 
-  def install
+  depends_on "readline"
 
+  def install
     # 1. Establish the local, writable lockfile pool inside the temporary build sandbox
     ENV["GCL_MULTIPROCESS_MEMORY_POOL"] = buildpath
 
@@ -29,7 +29,7 @@ class Gcl < Formula
     configure_args = %W[
       --prefix=#{prefix}
       --enable-gmp=#{Formula["gmp"].opt_prefix}
-      lispdir=#{elisp}
+      --with-lispdir=#{elisp}
     ]
 
     # Equivalent to Debian's dh_auto_configure, passing our array of variables
@@ -40,12 +40,11 @@ class Gcl < Formula
     system "make", "sb_ansi-tests/test_results"
     system "make", "sb_bench/timing_results"
     system "make", "install"
-
   end
 
   # The 'autopkgtest' equivalent to verify the build functions post-install
   test do
     # Verify that calling gcl launches cleanly and executes standard Lisp evaluations
-    assert_match "GCL", shell_output("#{bin}/gcl --batch -eval '(format t \"~a\" \"GCL\")(quit)'")
+    assert_match "GCL", shell_output("#{bin}/gcl -batch -eval '(format t \"~a\" \"GCL\")(quit)'")
   end
 end
