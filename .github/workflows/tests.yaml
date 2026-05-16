@@ -23,7 +23,7 @@ jobs:
           export HOMEBREW_EVAL_ALL=1
 
           # 2. Run Homebrew's internal code quality linter on your file
-          brew audit --formula Formula/gcl.rb --online --new
+          brew audit gcl --online --new
 
           # 3. Force compile directly from your local source formula
           brew install --build-from-source Formula/gcl.rb
