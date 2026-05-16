@@ -24,7 +24,7 @@ jobs:
 
           # 2. Inform Homebrew that your current directory is your custom tap
           # This hooks the directory into Homebrew's internal naming tree
-          brew tap-new cammgh/math --template=stub
+          brew tap-new cammgh/math
           rm -f /opt/homebrew/Library/Taps/cammgh/homebrew-math/Formula/*
           cp Formula/gcl.rb /opt/homebrew/Library/Taps/cammgh/homebrew-math/Formula/
 
