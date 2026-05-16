@@ -30,7 +30,7 @@ jobs:
           brew install --formula --build-from-source cammgh/math/gcl
 
           # 4. Trigger the formula's internal test block post-installation
-          brew test --formula cammgh/math/gcl
+          brew test cammgh/math/gcl
 
       - name: Open Debug SSH Session on Failure
         # This hook opens only if the previous compilation block failed

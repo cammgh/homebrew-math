@@ -44,6 +44,6 @@ class Gcl < Formula
   # The 'autopkgtest' equivalent to verify the build functions post-install
   test do
     # Verify that calling gcl launches cleanly and executes standard Lisp evaluations
-    assert_match "GCL", shell_output("#{bin}/gcl -batch -eval '(format t \"~a\" \"GCL\")(quit)'")
+    assert_match "GCL", shell_output("#{bin}/gcl -batch -eval '(format t \"~a\" \"GCL\")'")
   end
 end
