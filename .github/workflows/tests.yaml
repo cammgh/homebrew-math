@@ -22,14 +22,21 @@ jobs:
           # 1. Force Homebrew to evaluate all formulas locally
           export HOMEBREW_EVAL_ALL=1
 
-          # 2. Run Homebrew's internal code quality linter on your file
-          brew audit gcl --online --new
+          # 2. Inform Homebrew that your current directory is your custom tap
+          # This hooks the directory into Homebrew's internal naming tree
+          brew tap-new cammgh/math --template=stub
+          rm -f /opt/homebrew/Library/Taps/cammgh/homebrew-math/Formula/*
+          cp Formula/gcl.rb /opt/homebrew/Library/Taps/cammgh/homebrew-math/Formula/
 
-          # 3. Force compile directly from your local source formula
-          brew install --build-from-source Formula/gcl.rb
+          # 3. Run the linter against the explicitly qualified tap name
+          # This tells Homebrew to skip strict homebrew/core-only validation rules
+          brew audit cammgh/math/gcl --online
 
-          # 4. Trigger the formula's internal test block post-installation
-          brew test Formula/gcl.rb
+          # 4. Force compile directly from your local source formula
+          brew install --build-from-source /opt/homebrew/Library/Taps/cammgh/homebrew-math/Formula/gcl.rb
+
+          # 5. Trigger the formula's internal test block post-installation
+          brew test cammgh/math/gcl
 
       - name: Open Debug SSH Session on Failure
         # This hook opens only if the previous compilation block failed
