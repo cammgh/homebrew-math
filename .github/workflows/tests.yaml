@@ -6,7 +6,8 @@ on:
   pull_request:
 
 jobs:
-   strategy:
+  build:
+    strategy:
       matrix:
         include:
           - os: macos-latest
@@ -15,6 +16,10 @@ jobs:
             arch: x86_64  # Captures Intel platform compilation behaviors
 
     runs-on: ${{ matrix.os }}
+
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
