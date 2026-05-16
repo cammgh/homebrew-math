@@ -22,11 +22,11 @@ jobs:
           # 1. Force Homebrew to evaluate all formulas locally
           export HOMEBREW_EVAL_ALL=1
 
-          # 2. Inform Homebrew that your current directory is your custom tap
-          # This hooks the directory into Homebrew's internal naming tree
-          brew tap-new cammgh/math
-          rm -f /opt/homebrew/Library/Taps/cammgh/homebrew-math/Formula/*
-          cp Formula/gcl.rb /opt/homebrew/Library/Taps/cammgh/homebrew-math/Formula/
+          # 2. Extract your tap name and sync your active workspace file into it
+          # setup-homebrew sets up your repo at /opt/homebrew/Library/Taps/cammgh/homebrew-math
+          TAP_DIR="/opt/homebrew/Library/Taps/cammgh/homebrew-math"
+          mkdir -p "$TAP_DIR/Formula"
+          cp Formula/gcl.rb "$TAP_DIR/Formula/"
 
           # 3. Run the linter against the explicitly qualified tap name
           # This tells Homebrew to skip strict homebrew/core-only validation rules
