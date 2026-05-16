@@ -8,7 +8,7 @@ class Gcl < Formula
   license "GPL-2.0-or-later"
 
   # Explicitly ignores libx11 during strict dynamic linkage analysis checks
-  ignored_linkage_dependencies "libx11"
+  ignore_linkage "libx11"
 
   # Core dependencies needed to compile GCL on macOS
   depends_on "gmp"
