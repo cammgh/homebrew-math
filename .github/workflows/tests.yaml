@@ -24,7 +24,6 @@ jobs:
     runs-on: ${{ matrix.os }}
     env:
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
-      HOMEBREW_EVAL_ALL: "1"
 
     steps:
       - name: Checkout Repository
