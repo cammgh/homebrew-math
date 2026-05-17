@@ -37,16 +37,12 @@ jobs:
       - name: Build and Store Core GCL
         if: github.ref_name == 'main'
         run: |
-          # 1. Dynamically extract the tap name registered by setup-homebrew
-          TAP_NAME=$(brew tap | grep -v 'homebrew/' | head -n 1)
-          echo "Detected Tap Name: $TAP_NAME"
-
-          brew audit --formula "$TAP_NAME/gcl" --online
-          brew install --formula --build-from-source "$TAP_NAME/gcl"
-          brew test "$TAP_NAME/gcl"
+          brew audit --formula "cammgh/math/gcl" --online
+          brew install --formula --build-from-source "cammgh/math/gcl"
+          brew test "cammgh/math/gcl"
 
           # Pack the compiled binary into a portable local Homebrew tarball archive (.bottle)
-          brew bottle --root-url=https://localhost "$TAP_NAME/gcl"
+          brew bottle --root-url=https://localhost "cammgh/math/gcl"
 
       - name: Upload GCL Binary Package
         if: github.ref_name == 'main'
@@ -71,72 +67,48 @@ jobs:
       - name: Install Local GCL Binary
         if: github.ref_name != 'main'
         run: |
-          # 1. Dynamically extract the tap name registered by setup-homebrew
-          TAP_NAME=$(brew tap | grep -v 'homebrew/' | head -n 1)
-          echo "Detected Tap Name: $TAP_NAME"
-
           # If the download step caught the artifact, install instantly without a 40-minute compilation penalty
           if [ -f gcl-*.tar.gz ]; then
             brew install ./gcl-*.tar.gz
           else
             echo "No artifact found! Falling back to source compilation..."
-            brew install --formula --build-from-source "$TAP_NAME/gc;"
+            brew install --formula --build-from-source "cammgh/math/gc;"
           fi
 
       - name: Build Maxima Stack
         if: github.ref_name == 'maxima'
         run: |
-          # 1. Dynamically extract the tap name registered by setup-homebrew
-          TAP_NAME=$(brew tap | grep -v 'homebrew/' | head -n 1)
-          echo "Detected Tap Name: $TAP_NAME"
-
-          brew audit --formula "$TAP_NAME/maxima-gcl" --online
-          brew install --formula --build-from-source "$TAP_NAME/maxima-gcl"
-          brew test "$TAP_NAME/maxima-gcl"
+          brew audit --formula "cammgh/math/maxima-gcl" --online
+          brew install --formula --build-from-source "cammgh/math/maxima-gcl"
+          brew test "cammgh/math/maxima-gcl"
 
       - name: Build ACL2 Stack
         if: github.ref_name == 'acl2'
         run: |
-          # 1. Dynamically extract the tap name registered by setup-homebrew
-          TAP_NAME=$(brew tap | grep -v 'homebrew/' | head -n 1)
-          echo "Detected Tap Name: $TAP_NAME"
-
-          brew audit --formula "$TAP_NAME/acl2-gcl" --online
-          brew install --formula --build-from-source "$TAP_NAME/acl2-gcl"
-          brew test "$TAP_NAME/acl2-gcl"
+          brew audit --formula "cammgh/math/acl2-gcl" --online
+          brew install --formula --build-from-source "cammgh/math/acl2-gcl"
+          brew test "cammgh/math/acl2-gcl"
 
       - name: Build FriCAS Stack
         if: github.ref_name == 'fricas'
         run: |
-          # 1. Dynamically extract the tap name registered by setup-homebrew
-          TAP_NAME=$(brew tap | grep -v 'homebrew/' | head -n 1)
-          echo "Detected Tap Name: $TAP_NAME"
-
-          brew audit --formula "$TAP_NAME/fricas-gcl" --online
-          brew install --formula --build-from-source "$TAP_NAME/fricas-gcl"
-          brew test "$TAP_NAME/fricas-gcl"
+          brew audit --formula "cammgh/math/fricas-gcl" --online
+          brew install --formula --build-from-source "cammgh/math/fricas-gcl"
+          brew test "cammgh/math/fricas-gcl"
 
       - name: Build HOL88 Stack
         if: github.ref_name == 'hol88'
         run: |
-          # 1. Dynamically extract the tap name registered by setup-homebrew
-          TAP_NAME=$(brew tap | grep -v 'homebrew/' | head -n 1)
-          echo "Detected Tap Name: $TAP_NAME"
-
-          brew audit --formula "$TAP_NAME/hol88-gcl" --online
-          brew install --formula --build-from-source "$TAP_NAME/hol88-gcl"
-          brew test "$TAP_NAME/hol88-gcl"
+          brew audit --formula "cammgh/math/hol88-gcl" --online
+          brew install --formula --build-from-source "cammgh/math/hol88-gcl"
+          brew test "cammgh/math/hol88-gcl"
 
       - name: Build AXIOM Stack
         if: github.ref_name == 'axiom'
         run: |
-          # 1. Dynamically extract the tap name registered by setup-homebrew
-          TAP_NAME=$(brew tap | grep -v 'homebrew/' | head -n 1)
-          echo "Detected Tap Name: $TAP_NAME"
-
-          brew audit --formula "$TAP_NAME/axiom-gcl" --online
-          brew install --formula --build-from-source "$TAP_NAME/axiom-gcl"
-          brew test "$TAP_NAME/axiom-gcl"
+          brew audit --formula "cammgh/math/axiom-gcl" --online
+          brew install --formula --build-from-source "cammgh/math/axiom-gcl"
+          brew test "cammgh/math/axiom-gcl"
 
       # --- DEB_BUG TRACE ARCHIVE ---
       - name: Open Debug SSH Session on Failure
