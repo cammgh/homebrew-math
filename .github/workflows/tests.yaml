@@ -37,7 +37,7 @@ jobs:
         if: github.ref_name == 'main'
         run: |
           brew audit --formula "cammgh/math/gcl" --online
-          brew install --formula --build-from-source "cammgh/math/gcl"
+          brew install --formula --build-bottle --build-from-source "cammgh/math/gcl"
           brew test "cammgh/math/gcl"
 
           # Pack the compiled binary into a portable local Homebrew tarball archive (.bottle)
