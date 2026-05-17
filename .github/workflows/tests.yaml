@@ -1,8 +1,14 @@
-name: brew test-bot
+name: Dynamic Tap Validation
+
 on:
   push:
     branches:
       - main
+      - maxima
+      - acl2
+      - fricas
+      - axiom
+      - hol88
   pull_request:
 
 jobs:
@@ -13,12 +19,12 @@ jobs:
           - os: macos-latest
             arch: arm64
           - os: macos-15
-            arch: x86_64  # Captures Intel platform compilation behaviors
+            arch: x86_64
 
     runs-on: ${{ matrix.os }}
-
     env:
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+      HOMEBREW_EVAL_ALL: "1"
 
     steps:
       - name: Checkout Repository
@@ -27,23 +33,84 @@ jobs:
       - name: Set up Homebrew Framework
         uses: Homebrew/actions/setup-homebrew@main
 
-      - name: Execute Brew Test Bot
+      # --- LAYER 1: MAIN BRANCH LOGIC (COMPILE & EXPORT GCL) ---
+      - name: Build and Store Core GCL
+        if: github.ref_name == 'main'
         run: |
-          # 1. Force Homebrew to evaluate all formulas locally
-          export HOMEBREW_EVAL_ALL=1
+          brew audit --formula Formula/gcl.rb --online
+          brew install --formula --build-from-source Formula/gcl.rb
+          brew test Formula/gcl.rb
 
-          # 2. Run the linter against the explicitly qualified tap name
-          # This tells Homebrew to skip strict homebrew/core-only validation rules
-          brew audit --formula cammgh/math/gcl --online
+          # Pack the compiled binary into a portable local Homebrew tarball archive (.bottle)
+          brew bottle --root-url=https://localhost Formula/gcl.rb
 
-          # 3. Force compile directly from your local source formula
-          brew install --formula --build-from-source cammgh/math/gcl
+      - name: Upload GCL Binary Package
+        if: github.ref_name == 'main'
+        uses: actions/upload-artifact@v4
+        with:
+          name: gcl-binary-${{ matrix.os }}-${{ matrix.arch }}
+          path: gcl-*.tar.gz
 
-          # 4. Trigger the formula's internal test block post-installation
-          brew test cammgh/math/gcl
+      # --- LAYER 2: DERIVATIVE BRANCHES LOGIC (DOWNLOAD GCL & COMPILE DERIVATIVES) ---
+      - name: Download Precompiled GCL from Main Branch
+        if: github.ref_name != 'main'
+        uses: dawidd6/action-download-artifact@v9
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: main
+          workflow: tests.yaml
+          name: gcl-binary-${{ matrix.os }}-${{ matrix.arch }}
+          workflow_conclusion: success
+          path: ./
+        continue-on-error: true # Falls back to source if no artifact exists yet
 
+      - name: Install Local GCL Binary
+        if: github.ref_name != 'main'
+        run: |
+          # If the download step caught the artifact, install instantly without a 40-minute compilation penalty
+          if [ -f gcl-*.tar.gz ]; then
+            brew install ./gcl-*.tar.gz
+          else
+            echo "No artifact found! Falling back to source compilation..."
+            brew install --formula --build-from-source Formula/gcl.rb
+          fi
+
+      - name: Build Maxima Stack
+        if: github.ref_name == 'maxima'
+        run: |
+          brew audit --formula Formula/maxima-gcl.rb --online
+          brew install --formula --build-from-source Formula/maxima-gcl.rb
+          brew test Formula/maxima-gcl.rb
+
+      - name: Build ACL2 Stack
+        if: github.ref_name == 'acl2'
+        run: |
+          brew audit --formula Formula/acl2-gcl.rb --online
+          brew install --formula --build-from-source Formula/acl2-gcl.rb
+          brew test Formula/acl2-gcl.rb
+
+      - name: Build FriCAS Stack
+        if: github.ref_name == 'fricas'
+        run: |
+          brew audit --formula Formula/fricas-gcl.rb --online
+          brew install --formula --build-from-source Formula/fricas-gcl.rb
+          brew test Formula/fricas-gcl.rb
+
+      - name: Build HOL88 Stack
+        if: github.ref_name == 'hol88'
+        run: |
+          brew audit --formula Formula/hol88-gcl.rb --online
+          brew install --formula --build-from-source Formula/hol88-gcl.rb
+          brew test Formula/hol88-gcl.rb
+
+      - name: Build AXIOM Stack
+        if: github.ref_name == 'axiom'
+        run: |
+          brew audit --formula Formula/axiom-gcl.rb --online
+          brew install --formula --build-from-source Formula/axiom-gcl.rb
+          brew test Formula/axiom-gcl.rb
+
+      # --- DEB_BUG TRACE ARCHIVE ---
       - name: Open Debug SSH Session on Failure
-        # This hook opens only if the previous compilation block failed
         if: failure()
         uses: mxschmitt/action-tmate@v3
-
