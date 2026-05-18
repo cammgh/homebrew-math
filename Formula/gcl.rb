@@ -8,6 +8,12 @@ class Gcl < Formula
   version "2.7.2-prehb4"
   license "GPL-2.0-or-later"
 
+  # --- This block unlocks native binary bottling and path relocations ---
+  bottle do
+    root_url "https://localhost"
+    # The sha256 lines for arm64_sequoia or x86_64 will be injected dynamically by CI
+  end
+
   # Core dependencies needed to compile GCL on macOS
   depends_on "gmp"
 
