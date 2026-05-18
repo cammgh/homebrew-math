@@ -3,8 +3,8 @@ class Gcl < Formula
   homepage "https://gnu.org/software/gcl"
   # Pull directly from the upstream GNU Savannah repository
   url "git://git.sv.gnu.org/gcl.git",
-      tag:      "Version_2_7_2pre22", # Replace with your target version tag
-      revision: "cb4202cf8669a1ac431548f148f5f3cc27865615" # Replace with the exact Git commit hash
+      tag:      "Version_2_7_2pre_homebrew3", # Replace with your target version tag
+      revision: "f52109abc0b42dd8725e830fd38ec8f332167ffb" # Replace with the exact Git commit hash
   license "GPL-2.0-or-later"
 
   # Core dependencies needed to compile GCL on macOS
