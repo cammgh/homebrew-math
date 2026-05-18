@@ -4,7 +4,7 @@ class MaximaGcl < Formula
   
   # 1. Fetch the exact upstream source archive hosted by the Debian mirrors
   url "https://deb.debian.org/debian/pool/main/m/maxima/maxima_5.49.0+dsfg.orig.tar.gz"
-  version "5.49.0+dsfg-debian"
+  version "5.49.0+dsfg-4"
   sha256 "6d401a4aa307cd3a5a9cadca4fa96c4ef0e24ff95a18bb6a8f803e3d2114adee"
 
   # Explicitly declare binary name overlap with the standard SBCL homebrew/core package
