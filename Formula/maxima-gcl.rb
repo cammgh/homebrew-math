@@ -23,10 +23,13 @@ class MaximaGcl < Formula
     # Prevent Homebrew's compiler wrapper from optimizing away lisp symbols
     ENV.deparallelize
 
+    # 3. Create the target debian folder inside the build path
+    (buildpath/"debian").mkdir
+
     # 3. Unpack the debian tarball resource directly inside the build sandbox
     resource("debian-patches").stage do
       # Copy the extracted debian/ folder out into the main unpacked maxima source path
-      cp_r "debian", buildpath
+      cp_r ".", buildpath/"debian"
     end
 
     # 4. Programmatically loop through the Debian patches series file if it exists
