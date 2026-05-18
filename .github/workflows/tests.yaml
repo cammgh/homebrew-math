@@ -70,12 +70,13 @@ jobs:
             echo "Installing pre-built bottle via direct extraction..."
             BOTTLE_FILE=$(ls gcl-*.bottle.tar.gz | head -n 1)
 
-            # 1. Determine Homebrew's active prefix (usually /opt/homebrew or /usr/local)
-            BREW_PREFIX=$(brew --prefix)
+            # 1. Target the absolute Cellar storage root
+            CELLAR_DIR=$(brew --cellar)
+            mkdir -p "$CELLAR_DIR"
 
             # 2. Extract directly into the Cellar prefix root
             # Homebrew bottles are packed relative to the prefix root directory
-            sudo tar -xzf "$BOTTLE_FILE" -C "$BREW_PREFIX"
+            sudo tar -xzf "$BOTTLE_FILE" -C "$CELLAR_DIR"
 
             # 3. Force Homebrew to link the extracted binaries into bin/ and share/
             brew link --force gcl || brew link --overwrite gcl
