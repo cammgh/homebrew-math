@@ -5,6 +5,7 @@ class Gcl < Formula
   url "git://git.sv.gnu.org/gcl.git",
       tag:      "Version_2_7_2pre_homebrew4", # Replace with your target version tag
       revision: "435aabef558855596d7b2ab60154f22cb598732c" # Replace with the exact Git commit hash
+  version "2.7.2-prehb4"
   license "GPL-2.0-or-later"
 
   # Core dependencies needed to compile GCL on macOS

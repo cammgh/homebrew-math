@@ -48,7 +48,9 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: gcl-binary-${{ matrix.os }}-${{ matrix.arch }}
-          path: gcl-*.tar.gz
+          path: |
+	    gcl-*.bottle.tar.gz
+	    gcl-*.bottle.json
 
       # --- LAYER 2: DERIVATIVE BRANCHES LOGIC (DOWNLOAD GCL & COMPILE DERIVATIVES) ---
       - name: Download Precompiled GCL from Main Branch
@@ -66,20 +68,12 @@ jobs:
       - name: Install Local GCL Binary
         if: github.ref_name != 'main'
         run: |
-          if ls gcl-*.bottle.tar.gz 1> /dev/null 2>&1; then
-            echo "Installing pre-built bottle via direct extraction..."
-            BOTTLE_FILE=$(ls gcl-*.bottle.tar.gz | head -n 1)
+          if ls gcl-*.bottle.json 1> /dev/null 2>&1; then
+            echo "Installing pre-built bottle natively using its JSON metadata..."
 
-            # 1. Target the absolute Cellar storage root
-            CELLAR_DIR=$(brew --cellar)
-            mkdir -p "$CELLAR_DIR"
-
-            # 2. Extract directly into the Cellar prefix root
-            # Homebrew bottles are packed relative to the prefix root directory
-            sudo tar -xzf "$BOTTLE_FILE" -C "$CELLAR_DIR"
-
-            # 3. Force Homebrew to link the extracted binaries into bin/ and share/
-            brew link --force gcl || brew link --overwrite gcl
+            # Feeding the JSON file directly tells Homebrew how to automatically relocate paths
+            BOTTLE_JSON=$(ls gcl-*.bottle.json | head -n 1)
+            brew install --verbose "$BOTTLE_JSON"
           else
             echo "No artifact found! Falling back to source compilation..."
             brew install --formula --verbose --build-from-source "cammgh/math/gcl"
