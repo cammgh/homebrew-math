@@ -69,19 +69,27 @@ jobs:
         if: github.ref_name != 'main'
         run: |
           if ls gcl-*.bottle.tar.gz 1> /dev/null 2>&1; then
-            echo "Staging pre-compiled GCL archive into Homebrew's cache..."
+            echo "Determining Homebrew's expected cache filename..."
             BOTTLE_FILE=$(ls gcl-*.bottle.tar.gz | head -n 1)
 
-            # 1. Fetch the exact cache directory path Homebrew uses for downloads
-            BREW_CACHE=$(brew --cache)
-            mkdir -p "$BREW_CACHE"
+            # 1. Ask Homebrew exactly what file path it expects for this bottle
+            # This returns a path inside $(brew --cache)/Downloads/...
+            EXPECTED_CACHE_PATH=$(brew fetch --bottle "cammgh/math/gcl" 2>&1 | grep -oE '/Users/[^ ]+/Library/Caches/Homebrew/Downloads/[a-f0-9]+--gcl-[^ ]+' | head -n 1 || true)
 
-            # 2. Copy the artifact directly into the cache root folder
-            cp "$BOTTLE_FILE" "$BREW_CACHE/"
+            if [ -z "$EXPECTED_CACHE_PATH" ]; then
+              # Fallback if path structure differs on GitHub runners
+              BREW_CACHE=$(brew --cache)
+              EXPECTED_CACHE_PATH="$BREW_CACHE/gcl--2.7.2-prehb4.arm64_sequoia.bottle.tar.gz"
+            fi
+
+            echo "Expected cache location: $EXPECTED_CACHE_PATH"
+
+            # 2. Ensure the destination directory exists and move the file there
+            mkdir -p "$(dirname "$EXPECTED_CACHE_PATH")"
+            cp "$BOTTLE_FILE" "$EXPECTED_CACHE_PATH"
 
             echo "Pouring cached bottle natively..."
-            # 3. Running standard install now forces Homebrew to consume the cached archive,
-            # triggering native cell relocation and string expansions automatically.
+            # 3. This will now detect the file, skip download/compile, and auto-relocate placeholders
             brew install --verbose "cammgh/math/gcl"
           else
             echo "No artifact found! Falling back to source compilation..."
