@@ -66,9 +66,15 @@ jobs:
       - name: Install Local GCL Binary
         if: github.ref_name != 'main'
         run: |
-          # If the download step caught the artifact, install instantly without a 40-minute compilation penalty
-          if [ -f gcl-*.tar.gz ]; then
-            brew install ./gcl-*.tar.gz
+          # Check for any generated bottle archive matching your pattern
+          if ls gcl-*.bottle.tar.gz 1> /dev/null 2>&1; then
+            echo "Installing pre-built bottle..."
+
+            # Extract the exact filename dynamically
+            BOTTLE_FILE=$(ls gcl-*.bottle.tar.gz | head -n 1)
+
+            # Enforce explicit local path installation to prevent Homebrew formula searches
+            brew install --verbose "./$BOTTLE_FILE"
           else
             echo "No artifact found! Falling back to source compilation..."
             brew install --formula --verbose --build-from-source "cammgh/math/gcl"
