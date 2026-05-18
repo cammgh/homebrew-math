@@ -13,6 +13,12 @@ class MaximaGcl < Formula
   # Depend on your local GCL formula inside this tap
   depends_on "cammgh/math/gcl"
 
+  # --- Required GNU Build System Tooling ---
+  # Essential when patches touch configuration scripts or Makefile templates
+  depends_on "autoconf" => :build
+  depends_on "automake" => :build
+  depends_on "texinfo" => :build
+
   # 2. Attach the Debian packaging directory as a separate resource download block
   resource "debian-patches" do
     url "https://deb.debian.org/debian/pool/main/m/maxima/maxima_5.49.0+dsfg-4.debian.tar.xz"
