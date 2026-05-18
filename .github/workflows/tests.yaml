@@ -68,14 +68,21 @@ jobs:
       - name: Install Local GCL Binary
         if: github.ref_name != 'main'
         run: |
-          # Detect the pre-compiled bottle archive downloaded from the main branch
           if ls gcl-*.bottle.tar.gz 1> /dev/null 2>&1; then
-            echo "Installing pre-built bottle archive natively..."
-            BOTTLE_TARBALL=$(ls gcl-*.bottle.tar.gz | head -n 1)
+            echo "Staging pre-compiled GCL archive into Homebrew's cache..."
+            BOTTLE_FILE=$(ls gcl-*.bottle.tar.gz | head -n 1)
 
-            # Forcing both the file path and the explicit formula name skips catalog lookups
-            # and automatically executes Homebrew's native path relocation routine.
-            brew install --verbose --formula "./$BOTTLE_TARBALL"
+            # 1. Fetch the exact cache directory path Homebrew uses for downloads
+            BREW_CACHE=$(brew --cache)
+            mkdir -p "$BREW_CACHE"
+
+            # 2. Copy the artifact directly into the cache root folder
+            cp "$BOTTLE_FILE" "$BREW_CACHE/"
+
+            echo "Pouring cached bottle natively..."
+            # 3. Running standard install now forces Homebrew to consume the cached archive,
+            # triggering native cell relocation and string expansions automatically.
+            brew install --verbose "cammgh/math/gcl"
           else
             echo "No artifact found! Falling back to source compilation..."
             brew install --formula --verbose --build-from-source "cammgh/math/gcl"
