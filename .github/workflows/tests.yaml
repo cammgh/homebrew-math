@@ -71,7 +71,7 @@ jobs:
             brew install ./gcl-*.tar.gz
           else
             echo "No artifact found! Falling back to source compilation..."
-            brew install --formula --verbose --build-from-source "cammgh/math/gc;"
+            brew install --formula --verbose --build-from-source "cammgh/math/gcl"
           fi
 
       - name: Build Maxima Stack
