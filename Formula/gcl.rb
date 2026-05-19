@@ -11,7 +11,7 @@ class Gcl < Formula
   # --- This block unlocks native binary bottling and path relocations ---
   bottle do
     root_url "https://localhost"
-    sha256 cellar: :any, arm64_sequoia: "all"
+    # sha256 cellar: :any, arm64_sequoia: "all"
     # The sha256 lines for arm64_sequoia or x86_64 will be injected dynamically by CI
   end
 
