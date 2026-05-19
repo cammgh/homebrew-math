@@ -3,14 +3,15 @@ class Gcl < Formula
   homepage "https://gnu.org/software/gcl"
   # Pull directly from the upstream GNU Savannah repository
   url "git://git.sv.gnu.org/gcl.git",
-      tag:      "Version_2_7_2pre_homebrew4", # Replace with your target version tag
-      revision: "435aabef558855596d7b2ab60154f22cb598732c" # Replace with the exact Git commit hash
+      tag:      "Version_2_7_2pre_homebrew5", # Replace with your target version tag
+      revision: "51ee1a8e018b21beaeed5a8e2eb8db86b28a1976" # Replace with the exact Git commit hash
   version "2.7.2-prehb4"
   license "GPL-2.0-or-later"
 
   # --- This block unlocks native binary bottling and path relocations ---
   bottle do
     root_url "https://localhost"
+    sha256 cellar: :any, arm64_sequoia: "all"
     # The sha256 lines for arm64_sequoia or x86_64 will be injected dynamically by CI
   end
 

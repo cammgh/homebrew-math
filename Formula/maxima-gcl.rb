@@ -68,6 +68,7 @@ class MaximaGcl < Formula
     ]
 
     system "./configure", *configure_args
+    system "autoreconf","-ivf"
     system "make"
     system "make", "install"
   end
