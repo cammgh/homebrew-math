@@ -75,7 +75,7 @@ jobs:
 
             # Passing --bottle targets the binary package engine directly,
             # which automatically cleans up '@@HOMEBREW_CELLAR@@' strings.
-            brew install --verbose --bottle "./$BOTTLE_TARBALL"
+            brew install --verbose --force-bottle "./$BOTTLE_TARBALL"
           else
             echo "No artifact found! Falling back to source compilation..."
             brew install --formula --verbose --build-from-source "cammgh/math/gcl"
