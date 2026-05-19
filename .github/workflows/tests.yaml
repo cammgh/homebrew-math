@@ -69,7 +69,7 @@ jobs:
         if: github.ref_name != 'main'
         run: |
           # Detect the pre-compiled bottle archive downloaded from the artifact step
-          if ls gcl-*.bottle.tar.gz 1> /dev/null 2>&1; then
+          if ls gcl-*.bottle.tar.gz_fail 1> /dev/null 2>&1; then
             echo "Pouring pre-built bottle natively using the --bottle installer..."
             BOTTLE_TARBALL=$(ls gcl-*.bottle.tar.gz | head -n 1)
 
