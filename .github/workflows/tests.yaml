@@ -68,13 +68,14 @@ jobs:
       - name: Install Local GCL Binary
         if: github.ref_name != 'main'
         run: |
-          # If the JSON metadata exists, Homebrew can natively pour the local bottle
-          if ls gcl-*.bottle.json 1> /dev/null 2>&1; then
-            echo "Pouring pre-built bottle natively using JSON metadata..."
-            BOTTLE_JSON=$(ls gcl-*.bottle.json | head -n 1)
+          # Detect the pre-compiled bottle archive downloaded from the artifact step
+          if ls gcl-*.bottle.tar.gz 1> /dev/null 2>&1; then
+            echo "Pouring pre-built bottle natively using the --bottle installer..."
+            BOTTLE_TARBALL=$(ls gcl-*.bottle.tar.gz | head -n 1)
 
-            # This natively unpacks the tarball and cleans up '@@HOMEBREW_CELLAR@@'
-            brew install --verbose "$BOTTLE_JSON"
+            # Passing --bottle targets the binary package engine directly,
+            # which automatically cleans up '@@HOMEBREW_CELLAR@@' strings.
+            brew install --verbose --bottle "./$BOTTLE_TARBALL"
           else
             echo "No artifact found! Falling back to source compilation..."
             brew install --formula --verbose --build-from-source "cammgh/math/gcl"
