@@ -18,6 +18,7 @@ class Gcl < Formula
   # Core dependencies needed to compile GCL on macOS
   depends_on "gmp"
 
+
   # --- Full X11 Stack Dependency Declarations ---
   # Listing the complete sub-library array resolves the 'indirect linkage' audit failure
   depends_on "libx11"
