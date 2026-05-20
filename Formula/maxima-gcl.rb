@@ -59,7 +59,7 @@ class MaximaGcl < Formula
 
     
     # Point Maxima directly to our newly compiled GCL executable path
-    gcl_bin = Formula["cammgh/math/gcl"].opt_bin/"gcl"
+    gcl_bin = "/opt/homebrew/bin/gcl"
 
     # 5. Execute standard Maxima GNU Build System configuration targeting your GCL instance
     configure_args = %W[
