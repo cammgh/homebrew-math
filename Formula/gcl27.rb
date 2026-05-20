@@ -8,6 +8,7 @@ class Gcl27 < Formula
   version "2.7.2-prehb4"
   license "GPL-2.0-or-later"
 
+
   # --- This block unlocks native binary bottling and path relocations ---
   bottle do
     root_url "https://localhost"
