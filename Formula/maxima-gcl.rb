@@ -12,7 +12,7 @@ class MaximaGcl < Formula
   conflicts_with "maxima", because: "both install a 'maxima' executable"
 
   # Depend on your local GCL formula inside this tap
-  depends_on "cammgh/math/gcl"
+  depends_on "cammgh/math/gcl27"
 
   # --- Required GNU Build System Tooling ---
   # Essential when patches touch configuration scripts or Makefile templates
