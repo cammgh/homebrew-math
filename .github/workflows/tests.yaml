@@ -32,53 +32,54 @@ jobs:
       - name: Set up Homebrew Framework
         uses: Homebrew/actions/setup-homebrew@main
 
-      # --- LAYER 1: MAIN BRANCH LOGIC (COMPILE & EXPORT GCL) ---
-      - name: Build and Store Core GCL
+      # --- LAYER 1: MAIN BRANCH LOGIC (COMPILE & EXPORT GCL27) ---
+      - name: Build and Store Core GCL27
         if: github.ref_name == 'main'
         run: |
-          brew audit --formula "cammgh/math/gcl" --online || echo "Audit failure, continuing"
-          brew install --formula --verbose --build-bottle "cammgh/math/gcl"
-          brew test "cammgh/math/gcl"
+          brew audit --formula "cammgh/math/gcl27" --online || echo "Audit failure, continuing"
+          brew install --formula --verbose --build-bottle "cammgh/math/gcl27"
+          brew test "cammgh/math/gcl27"
 
           # Pack the compiled binary into a portable local Homebrew tarball archive (.bottle)
-          brew bottle --root-url=https://localhost "cammgh/math/gcl"
+          brew bottle --root-url=https://localhost "cammgh/math/gcl27"
 
-      - name: Upload GCL Binary Package
+      - name: Upload GCL27 Binary Package
         if: github.ref_name == 'main'
         uses: actions/upload-artifact@v4
         with:
-          name: gcl-binary-${{ matrix.os }}-${{ matrix.arch }}
+          name: gcl27-binary-${{ matrix.os }}-${{ matrix.arch }}
           path: |
-            gcl-*.bottle.tar.gz
-            gcl-*.bottle.json
+            gcl27-*.bottle.tar.gz
+            gcl27-*.bottle.json
 
-      # --- LAYER 2: DERIVATIVE BRANCHES LOGIC (DOWNLOAD GCL & COMPILE DERIVATIVES) ---
-      - name: Download Precompiled GCL from Main Branch
+      # --- LAYER 2: DERIVATIVE BRANCHES LOGIC (DOWNLOAD GCL27 & COMPILE DERIVATIVES) ---
+      - name: Download Precompiled GCL27 from Main Branch
         if: github.ref_name != 'main'
         uses: dawidd6/action-download-artifact@v9
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           branch: main
           workflow: tests.yaml
-          name: gcl-binary-${{ matrix.os }}-${{ matrix.arch }}
+          name: gcl27-binary-${{ matrix.os }}-${{ matrix.arch }}
           workflow_conclusion: success
           path: ./
         continue-on-error: true # Falls back to source if no artifact exists yet
 
-      - name: Install Local GCL Binary
+      - name: Install Local GCL27 Binary
         if: github.ref_name != 'main'
         run: |
+          false
           # Detect the pre-compiled bottle archive downloaded from the artifact step
-          if ls gcl-*.bottle.tar.gz_fail 1> /dev/null 2>&1; then
+          if ls gcl27-*.bottle.tar.gz_fail 1> /dev/null 2>&1; then
             echo "Pouring pre-built bottle natively using the --bottle installer..."
-            BOTTLE_TARBALL=$(ls gcl-*.bottle.tar.gz | head -n 1)
+            BOTTLE_TARBALL=$(ls gcl27-*.bottle.tar.gz | head -n 1)
 
             # Passing --bottle targets the binary package engine directly,
             # which automatically cleans up '@@HOMEBREW_CELLAR@@' strings.
             brew install --verbose --force-bottle "./$BOTTLE_TARBALL"
           else
             echo "No artifact found! Falling back to source compilation..."
-            brew install --formula --verbose --build-from-source "cammgh/math/gcl"
+            brew install --formula --verbose --build-from-source "cammgh/math/gcl27"
           fi
 
       - name: Build Maxima Stack
