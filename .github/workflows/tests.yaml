@@ -68,31 +68,18 @@ jobs:
       - name: Install Local GCL27 Binary
         if: github.ref_name != 'main'
         run: |
+          BOTTLE_FILE=$(ls -1 gcl27*z | head -n 1)
+          [ "$BOTTLE_FILE" != "" ] || false
           brew tap-new local/math
           TAP_DIR=$(brew --repository local/math)
           cp ./Formula/gcl27.rb "$TAP_DIR/Formula/gcl27.rb"
-          BOTTLE_FILE=$(ls -1 gcl27*z | head -n 1)
           BOTTLE_SHA=$(shasum -a 256 $BOTTLE_FILE | awk '{print $1}')
           cp $BOTTLE_FILE $TAP_DIR/$(echo $BOTTLE_FILE | sed 's,--,-,1')
           cd $TAP_DIR
           cp Formula/gcl27.rb Formula/gcl27.rb.old
           sed -i '' "s@root_url .*@root_url \"file://${TAP_DIR}\"@g" Formula/gcl27.rb
           sed -i '' "s/# sha256 cellar.*/sha256 cellar: :any, arm64_sequoia: \"${BOTTLE_SHA}\"/g" Formula/gcl27.rb
-          # false # diff -u Formula/gcl27.rb.old Formula/gcl27.rb
           brew install --formula ./Formula/gcl27.rb
-          false
-          # Detect the pre-compiled bottle archive downloaded from the artifact step
-          if ls gcl27-*.bottle.tar.gz_fail 1> /dev/null 2>&1; then
-            echo "Pouring pre-built bottle natively using the --bottle installer..."
-            BOTTLE_TARBALL=$(ls gcl27-*.bottle.tar.gz | head -n 1)
-
-            # Passing --bottle targets the binary package engine directly,
-            # which automatically cleans up '@@HOMEBREW_CELLAR@@' strings.
-            brew install --verbose --force-bottle "./$BOTTLE_TARBALL"
-          else
-            echo "No artifact found! Falling back to source compilation..."
-            brew install --formula --verbose --build-from-source "cammgh/math/gcl27"
-          fi
 
       - name: Build Maxima Stack
         if: github.ref_name == 'maxima'
