@@ -26,6 +26,7 @@ class MaximaGcl < Formula
     sha256 "8261d8d916b6168acba394b0f74df5ee51316a75d1a57463d324f41a398db2f5"
   end
 
+
   def install
     # Prevent Homebrew's compiler wrapper from optimizing away lisp symbols
     ENV.deparallelize
