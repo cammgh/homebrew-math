@@ -78,7 +78,7 @@ jobs:
           cp Formula/gcl27.rb Formula/gcl27.rb.old
           sed -i '' "s@root_url .*@root_url \"file://${TAP_DIR}\"@g" Formula/gcl27.rb
           sed -i '' "s/# sha256 cellar.*/sha256 cellar: :any, sequoia_arm64: \"${BOTTLE_SHA}\"/g" Formula/gcl27.rb
-          # diff -u Formula/gcl27.rb.old Formula/gcl27.rb
+          false # diff -u Formula/gcl27.rb.old Formula/gcl27.rb
           brew install --formula ./Formula/gcl27.rb
           false
           # Detect the pre-compiled bottle archive downloaded from the artifact step
