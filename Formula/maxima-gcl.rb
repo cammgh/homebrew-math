@@ -82,6 +82,6 @@ class MaximaGcl < Formula
     # Run a basic algebraic verification test to ensure image dumping completed safely
     test_cmd = "run_testsuite();"
     #    assert_match "No unexpected errors", shell_output("#{bin}/maxima --batch-string='#{test_cmd}'")
-    system "maxima","--batch-string='run_testsuite(share_tests=true);'"
+    system "#{bin}/maxima","--batch-string=run_testsuite(share_tests=true);"
   end
 end
