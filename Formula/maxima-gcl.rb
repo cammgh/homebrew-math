@@ -58,6 +58,7 @@ class MaximaGcl < Formula
     end
 
     
+
     # Point Maxima directly to our newly compiled GCL executable path
     gcl_bin = "/opt/homebrew/bin/gcl"
 
