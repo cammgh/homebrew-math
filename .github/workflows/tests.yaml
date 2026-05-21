@@ -81,12 +81,12 @@ jobs:
           sed -i '' "s/# sha256 cellar.*/sha256 cellar: :any, arm64_sequoia: \"${BOTTLE_SHA}\"/g" Formula/gcl27.rb
           brew install --formula ./Formula/gcl27.rb
 
-      - name: Build Maxima Stack
+      - name: Build Maxima
         if: github.ref_name == 'maxima'
         run: |
           brew audit --formula "cammgh/math/maxima-gcl" --online || echo "Audit failure, continuing"
           brew install --formula --verbose --build-from-source "cammgh/math/maxima-gcl"
-          brew test "cammgh/math/maxima-gcl"
+          brew test --verbose "cammgh/math/maxima-gcl"
 
       - name: Build ACL2 Stack
         if: github.ref_name == 'acl2'
