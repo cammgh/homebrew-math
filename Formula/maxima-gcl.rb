@@ -80,8 +80,8 @@ class MaximaGcl < Formula
     # Run a simple symbolic math calculation to ensure the GCL core image runs flawlessly
     assert_match "2", shell_output("#{bin}/maxima --batch-string='1+1;'")
     # Run a basic algebraic verification test to ensure image dumping completed safely
-    test_cmd = "run_testsuite();"
+    # test_cmd = "run_testsuite();"
     #    assert_match "No unexpected errors", shell_output("#{bin}/maxima --batch-string='#{test_cmd}'")
-    system "#{bin}/maxima","--batch-string=run_testsuite(share_tests=true);"
+    # system "#{bin}/maxima","--batch-string=run_testsuite(share_tests=true);"
   end
 end

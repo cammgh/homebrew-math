@@ -88,6 +88,11 @@ jobs:
           brew install --formula --verbose --build-from-source "cammgh/math/maxima-gcl"
           brew test --verbose "cammgh/math/maxima-gcl"
 
+      - name: Execute Full Upstream Testsuite (with 30-minute GitHub Timeout)
+        timeout-minutes: 30
+        run: |
+          /opt/homebrew/bin/maxima --batch-string="run_testsuite(share_tests=true);"
+
       - name: Build ACL2 Stack
         if: github.ref_name == 'acl2'
         run: |
