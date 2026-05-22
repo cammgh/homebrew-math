@@ -3,10 +3,11 @@ class Gcl27 < Formula
   homepage "https://gnu.org/software/gcl"
   # Pull directly from the upstream GNU Savannah repository
   url "git://git.sv.gnu.org/gcl.git",
-      tag:      "Version_2_7_2pre_homebrew5", # Replace with your target version tag
-      revision: "51ee1a8e018b21beaeed5a8e2eb8db86b28a1976" # Replace with the exact Git commit hash
+      tag:      "Version_2_7_2pre24", # Replace with your target version tag
+      revision: "c2c90305d3187baf231fb5d0ac8554f9dcf6051f" # Replace with the exact Git commit hash
   version "2.7.2-prehb4"
   license "GPL-2.0-or-later"
+
 
   # --- This block unlocks native binary bottling and path relocations ---
   bottle do
