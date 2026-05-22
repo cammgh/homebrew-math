@@ -92,7 +92,7 @@ jobs:
         timeout-minutes: 30
         run: |
           GCL_MEM_MULTIPLE=1.0 maxima --batch-string="run_testsuite(share_tests=true);"
-          false
+          #false
 
       - name: Build ACL2 Stack
         if: github.ref_name == 'acl2'
