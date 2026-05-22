@@ -91,7 +91,8 @@ jobs:
       - name: Execute Full Upstream Testsuite (with 30-minute GitHub Timeout)
         timeout-minutes: 30
         run: |
-          /opt/homebrew/bin/maxima --batch-string="run_testsuite(share_tests=true);"
+          ./maxima-local -g --lisp=gcl --batch-string="run_testsuite(share_tests=true);"
+          false
 
       - name: Build ACL2 Stack
         if: github.ref_name == 'acl2'
