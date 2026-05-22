@@ -3,8 +3,8 @@ class Gcl27 < Formula
   homepage "https://gnu.org/software/gcl"
   # Pull directly from the upstream GNU Savannah repository
   url "git://git.sv.gnu.org/gcl.git",
-      tag:      "Version_2_7_2pre_homebrew7", # Replace with your target version tag
-      revision: "c7c75cc914314db6e91b1ecec6878114fbc6baf1" # Replace with the exact Git commit hash
+      tag:      "Version_2_7_2pre24", # Replace with your target version tag
+      revision: "c2c90305d3187baf231fb5d0ac8554f9dcf6051f" # Replace with the exact Git commit hash
   version "2.7.2-prehb4"
   license "GPL-2.0-or-later"
 
