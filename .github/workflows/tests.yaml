@@ -82,6 +82,7 @@ jobs:
           brew install --formula ./Formula/gcl27.rb
 
       - name: Build Maxima
+        if: github.ref_name == 'maxima'
         run: |
           brew audit --formula "cammgh/math/maxima-gcl" --online || echo "Audit failure, continuing"
           brew install --formula --verbose --build-from-source "cammgh/math/maxima-gcl"
