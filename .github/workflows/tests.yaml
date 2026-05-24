@@ -127,4 +127,7 @@ jobs:
       # --- DEB_BUG TRACE ARCHIVE ---
       - name: Open Debug SSH Session on Failure
         if: failure()
-        uses: mxschmitt/action-tmate@v3
+        uses: owenthereal/action-upterm@v1
+        with:
+          # Explicitly force a raw bash process instead of tmux
+          upterm-command: /bin/bash --noprofile --norc
