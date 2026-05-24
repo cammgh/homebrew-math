@@ -46,9 +46,10 @@ class FricasGcl < Formula
 
     system "./configure", *configure_args
     system "make"
+    system "make","-C","src/input","check"
     system "make", "install"
   end
-    test do
-    system "make","-C","src/input","check"
+  test do
+    system "#{bin}/fricas", "--version"
   end
 end
