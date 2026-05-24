@@ -48,6 +48,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: gcl27-binary-${{ matrix.os }}-${{ matrix.arch }}
+          overwrite: true
           path: |
             gcl27-*.bottle.tar.gz
             gcl27-*.bottle.json
