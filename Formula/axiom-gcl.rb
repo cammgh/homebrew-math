@@ -9,6 +9,7 @@ class AxiomGcl < Formula
   #conflicts_with "axiom", because: "both install a 'axiom' executable"
 
   depends_on "cammgh/math/gcl27"
+  depends_on "texlive"
 
   resource "debian-patches" do
     url "https://deb.debian.org/debian/pool/main/a/axiom/axiom_20210105dp1-3.debian.tar.xz"
