@@ -58,7 +58,7 @@ class AxiomGcl < Formula
            for i in testdir testroot prep installdirs; do
                ln -s /usr/bin/true bin/dh_$i
            done
-           ln -s #{prefix}/bin/gcl bin/gcl27
+           ln -s $(which gcl) bin/gcl27
            gmake -f debian/rules configure
            gmake -f debian/rules build
            gmake -f debian/rules install
