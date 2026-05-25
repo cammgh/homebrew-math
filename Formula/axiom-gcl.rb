@@ -47,6 +47,7 @@ class AxiomGcl < Formula
 
     ENV.append "CFLAGS","-DSIGCLD=SIGCHLD -I#{buildpath}/include"
     ENV.append "CPPFLAGS","-DSIGCLD=SIGCHLD -I#{buildpath}/include"
+    ENV.append "C_INCLUDE_PATH","#{buildpath}/include"
     ENV.append "DEB_BUILD_OPTIONS","parallel=#{ENV.make_jobs}"
     ENV.prepend_path "PATH", Formula["findutils"].opt_libexec/"gnubin"
     ENV.prepend_path "PATH", buildpath/"bin"
