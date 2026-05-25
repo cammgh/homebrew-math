@@ -43,7 +43,7 @@ class AxiomGcl < Formula
       end
     end
 
-    system "make","TESTSET=regresstests","GCL=gcl"
+    system "make","TESTSET=regresstests","GCL=/opt/homebrew/bin/gcl"
   end
   test do
     system "#{bin}/axiom", "--version"
