@@ -10,6 +10,14 @@ class AxiomGcl < Formula
 
   depends_on "cammgh/math/gcl27"
   depends_on "texlive"
+  depends_on "gawk"  => :build
+  depends_on "sharutils"  => :build
+  depends_on "ghostscript"
+  depends_on "libxt"
+  depends_on "libxpm"
+  depends_on "make" => :build
+  depends_on "findutils" => :build
+  #depends_on "gawk" => :build
 
   resource "debian-patches" do
     url "https://deb.debian.org/debian/pool/main/a/axiom/axiom_20210105dp1-3.debian.tar.xz"
@@ -17,12 +25,6 @@ class AxiomGcl < Formula
   end
 
   def install
-    ENV["AXIOM"] = "#{buildpath}/mnt/linux"
-    ENV["PATH"] = "#{ENV["AXIOM"]}/bin:#{ENV["PATH"]}"
-    ENV["GCL_ANSI"]="t"
-    ENV["GCL_MULTIPROCESS_MEMORY_POOL"] = buildpath.to_s
-    ENV["HOME"] = buildpath.to_s
-
     (buildpath/"debian").mkdir
 
     resource("debian-patches").stage do
@@ -42,10 +44,39 @@ class AxiomGcl < Formula
         end
       end
     end
-    system "false"
-    system "make","TESTSET=regresstests","GCL=/opt/homebrew/bin/gcl"
+
+    ENV.append "CFLAGS","-DSIGCLD=SIGCHLD -I#{buildpath}/include"
+    ENV.append "CPPFLAGS","-DSIGCLD=SIGCHLD -I#{buildpath}/include"
+    ENV.append "DEB_BUILD_OPTIONS","parallel=#{ENV.make_jobs}"
+    ENV.prepend_path "PATH", Formula["findutils"].opt_libexec/"gnubin"
+    ENV.prepend_path "PATH", buildpath/"bin"
+    
+    #system "false"
+    system <<~SHELL
+           mkdir bin include
+           echo "#include <stdlib.h>" >include/malloc.h
+           for i in testdir testroot prep installdirs; do
+               ln -s /usr/bin/true bin/dh_$i
+           done
+           gmake -f debian/rules configure
+           gmake -f debian/rules build
+           gmake -f debian/rules install
+           for i in debian/bin/axiom debian/bin/axiom-test; do
+               sed 's,/usr/lib/axiom,#{prefix}/lib/axiom,g' $i >%i.new
+               chmod +x $i.new
+               mv $i.new $i
+           done
+           for i in debian/*.install; do
+               awk '{gsub("usr/","",$2);printf("mkdir -p #{prefix}/%s && cp -r %s #{prefix}/%s\n",$2,$1,$2)}' $i
+           done |bash
+           for i in debian/*.links; do
+               awk '{gsub("usr/","",$0);printf("ln -snf #{prefix}/%s #{prefix}/%s\n",$1,$2)}' $i
+           done |bash
+    SHELL
+    #system "make","TESTSET=regresstests","GCL=/opt/homebrew/bin/gcl"
   end
   test do
-    system "#{bin}/axiom", "--version"
+    output = shell_output("echo ')quit' | #{bin}/axiom -noht -noclef")
+    assert_match "Axiom", output
   end
 end
