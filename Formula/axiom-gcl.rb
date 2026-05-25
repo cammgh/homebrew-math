@@ -42,7 +42,7 @@ class AxiomGcl < Formula
         end
       end
     end
-
+    system "false"
     system "make","TESTSET=regresstests","GCL=/opt/homebrew/bin/gcl"
   end
   test do
