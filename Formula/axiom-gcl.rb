@@ -64,15 +64,15 @@ class AxiomGcl < Formula
            gmake -f debian/rules build
            gmake -f debian/rules install
            for i in debian/bin/axiom debian/bin/axiom-test; do
-               sed 's,/usr/lib/axiom,#{prefix}/lib/axiom,g' $i >%i.new
+               sed 's,/usr/lib/axiom,#{prefix}/lib/axiom,g' $i >$i.new
                chmod +x $i.new
                mv $i.new $i
            done
            for i in debian/*.install; do
-               awk '{gsub("usr/","",$2);printf("mkdir -p #{prefix}/%s && cp -r %s #{prefix}/%s\n",$2,$1,$2)}' $i
+               awk '{gsub("usr/","",$2);printf("mkdir -p #{prefix}/%s && cp -r %s #{prefix}/%s\\n",$2,$1,$2)}' $i
            done |bash
            for i in debian/*.links; do
-               awk '{gsub("usr/","",$0);printf("ln -snf #{prefix}/%s #{prefix}/%s\n",$1,$2)}' $i
+               awk '{gsub("usr/","",$0);printf("ln -snf #{prefix}/%s #{prefix}/%s\\n",$1,$2)}' $i
            done |bash
     SHELL
     #system "make","TESTSET=regresstests","GCL=/opt/homebrew/bin/gcl"
