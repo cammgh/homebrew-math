@@ -1,4 +1,4 @@
-class FricasGcl < Formula
+class AxiomGcl < Formula
   desc "Computer algebra system (GCL compiler backend)"
   homepage "https://sourceforge.io"
 
