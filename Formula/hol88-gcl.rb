@@ -2,7 +2,7 @@ class Hol88Gcl < Formula
   desc "Computer algebra system (GCL compiler backend)"
   homepage "https://sourceforge.io"
 
-  url "https://deb.debian.org/debian/pool/main/h/hol88_2.02.19940316dfsg.orig.tar.gz"
+  url "https://deb.debian.org/debian/pool/main/h/hol88/hol88_2.02.19940316dfsg.orig.tar.gz"
   version "2.02.19940316dfsg-8"
   sha256 "8e2a4f83cea20d0cf2416f7d55c951498f6c807b03ebc9381a02fa4c81c5da69"
 
