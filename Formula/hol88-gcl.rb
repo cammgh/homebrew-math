@@ -51,8 +51,9 @@ class Hol88Gcl < Formula
     #ENV.append "DEB_BUILD_OPTIONS","parallel=#{ENV.make_jobs}"
     ENV.prepend_path "PATH", Formula["findutils"].opt_libexec/"gnubin"
     ENV.prepend_path "PATH", buildpath/"bin"
+    ENV.deparallelize
 
-    system "false"
+    #system "false"
     system <<~SHELL
            mkdir bin #include
            #echo "#include <stdlib.h>" >include/malloc.h
@@ -63,13 +64,13 @@ class Hol88Gcl < Formula
            gmake -f debian/rules configure
            gmake -f debian/rules build
            gmake -f debian/rules install
-           mkdir -p debian/hol88/usr/bin
-           cp debian/hol88.sh debian/hol88/usr/bin
            for i in debian/hol88.sh; do
                sed 's,/usr/lib/hol88,#{prefix}/lib/hol88,g' $i >$i.new
                chmod +x $i.new
                mv $i.new $i
            done
+           mkdir -p debian/hol88/usr/bin
+           cp debian/hol88.sh debian/hol88/usr/bin
            for i in debian/*.install; do
                awk '{gsub("usr/","",$2);printf("mkdir -p #{prefix}/%s && cp -r %s #{prefix}/%s\\n",$2,$1,$2)}' $i
            done |bash
