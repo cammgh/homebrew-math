@@ -73,10 +73,10 @@ class Hol88Gcl < Formula
            done
            for i in debian/*.install; do
                awk '{gsub("usr/","",$2);printf("mkdir -p #{prefix}/%s && cp -r %s #{prefix}/%s\\n",$2,$1,$2)}' $i
-           done |bash
+           done |bash -x
            for i in debian/*.links; do
                awk '{gsub("usr/","",$0);printf("ln -snf #{prefix}/%s #{prefix}/%s\\n",$1,$2)}' $i
-           done |bash
+           done |bash -x
            mv #{prefix}/bin/hol88.sh #{prefix}/bin/hol88
     SHELL
     #system "make","TESTSET=regresstests","GCL=/opt/homebrew/bin/gcl"
