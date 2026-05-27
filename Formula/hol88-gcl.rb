@@ -77,6 +77,7 @@ class Hol88Gcl < Formula
            for i in debian/*.links; do
                awk '{gsub("usr/","",$0);printf("ln -snf #{prefix}/%s #{prefix}/%s\\n",$1,$2)}' $i
            done |bash
+           mv #{prefix}/bin/hol88.sh #{prefix}/bin/hol88
     SHELL
     #system "make","TESTSET=regresstests","GCL=/opt/homebrew/bin/gcl"
   end
