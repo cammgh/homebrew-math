@@ -3,7 +3,7 @@ class AxiomGcl < Formula
   homepage "https://sourceforge.io"
 
   url "https://deb.debian.org/debian/pool/main/a/axiom/axiom_20210105dp1.orig.tar.gz"
-  version "20210105dp1-3"
+  version "20210105dp1-4"
   sha256 "8f2b1d2cf26dcefd4e794fe2545982e4bc987b10a1945f70bd9f816df532ee17"
 
   #conflicts_with "axiom", because: "both install a 'axiom' executable"
@@ -20,8 +20,8 @@ class AxiomGcl < Formula
   #depends_on "gawk" => :build
 
   resource "debian-patches" do
-    url "https://deb.debian.org/debian/pool/main/a/axiom/axiom_20210105dp1-3.debian.tar.xz"
-    sha256 "e6b3a85b39074cb8c53be71820870352baef92456e5226c89fb15a11ef9353ba"
+    url "https://deb.debian.org/debian/pool/main/a/axiom/axiom_20210105dp1-4.debian.tar.xz"
+    sha256 "1e1583f6e7a1493f1545796d6732d470610b7d6e84a4dfcdf1112a6cf13cd040"
   end
 
   def install
@@ -69,11 +69,11 @@ class AxiomGcl < Formula
                mv $i.new $i
            done
            for i in debian/*.install; do
-               awk '{gsub("usr/","",$2);printf("mkdir -p #{prefix}/%s && cp -r %s #{prefix}/%s\\n",$2,$1,$2)}' $i
-           done |bash
+               awk '{gsub("usr/","",$2);printf("mkdir -p #{prefix}/%s && cp -r %s #{prefix}/%s\\n",$2,$1,$2)}' $i | bash -x
+           done
            for i in debian/*.links; do
-               awk '{gsub("usr/","",$0);printf("ln -snf #{prefix}/%s #{prefix}/%s\\n",$1,$2)}' $i
-           done |bash
+               awk '{gsub("usr/","",$0);printf("ln -snf #{prefix}/%s #{prefix}/%s\\n",$1,$2)}' $i | bash -x
+           done
     SHELL
     #system "make","TESTSET=regresstests","GCL=/opt/homebrew/bin/gcl"
   end
