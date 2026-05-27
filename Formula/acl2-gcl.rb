@@ -11,13 +11,9 @@ class Acl2Gcl < Formula
   depends_on "cammgh/math/gcl27"
   depends_on "texlive"
   depends_on "gawk"  => :build
-  #depends_on "coreutils"  => :build
-  #depends_on "ghostscript"
-  #depends_on "libxt"
-  #depends_on "libxpm"
+  depends_on "coreutils"  => :build
   depends_on "make" => :build
   depends_on "findutils" => :build
-  #depends_on "gawk" => :build
 
   resource "debian-patches" do
     url "https://deb.debian.org/debian/pool/main/a/acl2/acl2_8.6+dfsg-3.debian.tar.xz"
@@ -45,24 +41,21 @@ class Acl2Gcl < Formula
       end
     end
 
-    #ENV.append "CFLAGS","-DSIGCLD=SIGCHLD -I#{buildpath}/include"
-    #ENV.append "CPPFLAGS","-DSIGCLD=SIGCHLD -I#{buildpath}/include"
-    #ENV.append "C_INCLUDE_PATH","#{buildpath}/include"
-    #ENV.append "DEB_BUILD_OPTIONS","parallel=#{ENV.make_jobs}"
     ENV.prepend_path "PATH", Formula["findutils"].opt_libexec/"gnubin"
+    ENV.prepend_path "PATH", Formula["coreutils"].opt_libexec/"gnubin"
     ENV.prepend_path "PATH", buildpath/"bin"
-    ENV.deparallelize
 
     system "false"
     system <<~SHELL
-           mkdir bin #include
+           #mkdir bin #include
            #echo "#include <stdlib.h>" >include/malloc.h
            for i in testdir testroot prep installdirs install; do
                ln -s /usr/bin/true bin/dh_$i
            done
            ln -s $(which gcl) bin/gcl27
+           echo '#+(and gcl no-sigfpe)(ignore-errors (si::flush-floating-point-exceptions nil nil (lambda nil nil)))' >>init.lisp
            #gmake -f debian/rules configure
-           gmake -f debian/rules build
+           gmake -O -f debian/rules build
            mkdir -p debian/acl2/usr/bin
            touch debian/acl2/usr/bin/acl2.sh
            gmake -f debian/rules install
@@ -71,7 +64,6 @@ class Acl2Gcl < Formula
                chmod +x $i.new
                mv $i.new $i
            done
-           chmod +x hol
            for i in debian/*.install; do
                awk '{gsub("/?usr/","",$2);printf("mkdir -p #{prefix}/%s && cp -r %s #{prefix}/%s\\n",$2,$1,$2)}' $i | bash -x
            done
@@ -80,10 +72,9 @@ class Acl2Gcl < Formula
            done
            mv #{prefix}/bin/acl2.sh #{prefix}/bin/acl2
     SHELL
-    #system "make","TESTSET=regresstests","GCL=/opt/homebrew/bin/gcl"
   end
   test do
-    output = shell_output("echo 'quit();;' | #{bin}/acl2")
+    output = shell_output("echo '(quit)' | #{bin}/acl2")
     assert_match "ACL2", output
   end
 end
