@@ -63,14 +63,14 @@ class Hol88Gcl < Formula
            ln -s $(which gcl) bin/gcl27
            gmake -f debian/rules configure
            gmake -f debian/rules build
+           mkdir -p debian/hol88/usr/bin
+           touch debian/hol88/usr/bin/hol88.sh
            gmake -f debian/rules install
            for i in debian/hol88.sh; do
                sed 's,/usr/lib/hol88,#{prefix}/lib/hol88,g' $i >$i.new
                chmod +x $i.new
                mv $i.new $i
            done
-           mkdir -p debian/hol88/usr/bin
-           cp debian/hol88.sh debian/hol88/usr/bin
            for i in debian/*.install; do
                awk '{gsub("usr/","",$2);printf("mkdir -p #{prefix}/%s && cp -r %s #{prefix}/%s\\n",$2,$1,$2)}' $i
            done |bash
