@@ -83,7 +83,7 @@ class Hol88Gcl < Formula
     #system "make","TESTSET=regresstests","GCL=/opt/homebrew/bin/gcl"
   end
   test do
-    output = shell_output("echo ')quit' | #{bin}/hol88")
+    output = shell_output("echo 'quit();;' | #{bin}/hol88")
     assert_match "HOL88", output
   end
 end
