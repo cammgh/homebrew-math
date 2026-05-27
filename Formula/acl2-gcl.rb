@@ -41,6 +41,7 @@ class Acl2Gcl < Formula
       end
     end
 
+    ENV.append "DEB_BUILD_OPTIONS","parallel=#{ENV.make_jobs}"
     ENV.prepend_path "PATH", Formula["findutils"].opt_libexec/"gnubin"
     ENV.prepend_path "PATH", Formula["coreutils"].opt_libexec/"gnubin"
     ENV.prepend_path "PATH", buildpath/"bin"
