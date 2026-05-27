@@ -61,7 +61,7 @@ class Acl2Gcl < Formula
                ln -s /usr/bin/true bin/dh_$i
            done
            ln -s $(which gcl) bin/gcl27
-           gmake -f debian/rules configure
+           #gmake -f debian/rules configure
            gmake -f debian/rules build
            mkdir -p debian/acl2/usr/bin
            touch debian/acl2/usr/bin/acl2.sh
