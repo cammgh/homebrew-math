@@ -64,7 +64,8 @@ class Acl2Gcl < Formula
            gmake -O -f debian/rules debian/mini-proveall.out
            mkdir -p $(dirname  $HOMEBREW_ACL2_OCF)
            tar zcf $HOMEBREW_ACL2_OCF --exclude=$HOMEBREW_ACL2_OCF .
-           touch #{prefix}/.placeholder
+           mkdir -p #{prefix}/share/acl2
+           echo f > #{prefix}/share/acl2/tmp
       SHELL
     end
 
@@ -83,7 +84,8 @@ class Acl2Gcl < Formula
            gmake -O -f debian/rules build
            mkdir -p $(dirname  $HOMEBREW_ACL2_OCF)
            tar zcf $HOMEBREW_ACL2_OCF --exclude=$HOMEBREW_ACL2_OCF .
-           touch #{prefix}/.placeholder
+           mkdir -p #{prefix}/share/acl2
+           echo f > #{prefix}/share/acl2/tmp
       SHELL
     end
 
@@ -99,6 +101,7 @@ class Acl2Gcl < Formula
            sed -i '' 's,/usr/lib/acl2,#{prefix}/lib/acl2,g' debian/acl2/usr/bin/acl2
            for i in $(find debian -type d -name usr); do mv $i/* $i/..; rmdir $i; done
            mkdir -p #{prefix}
+           rm -f #{prefix}/share/acl2/tmp
            for i in debian/*.install; do j=${i%.install}; cp -a $j/* #{prefix}/; done
       SHELL
     end
