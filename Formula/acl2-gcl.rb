@@ -29,7 +29,7 @@ class Acl2Gcl < Formula
     ENV["PF2"]="add-ons proof-builder finite-set-theory cowles defsort doc meta bdd parsers tau hints powerlists unicode ihs build arithmetic hacking intel ordinals sorting oslib proofstyles arithmetic-2 data-structures textbook nonstd arithmetic-3 xdoc defexec clause-processors make-event arithmetic-5 acl2s tools demos misc system coi models std rtl workshops kestrel "
     ENV["PF3"]="centaur projects kestrel "
 
-    if ENV["HB_ACL2_BUILD"] == "core"
+    if ENV["HOMEBREW_ACL2_BUILD"] == "core"
       (buildpath/"debian").mkdir
 
       resource("debian-patches").stage do
@@ -62,32 +62,32 @@ class Acl2Gcl < Formula
            echo '#+(and gcl no-sigfpe)(ignore-errors (si::flush-floating-point-exceptions nil nil (lambda nil nil)))' >>init.lisp
            sed -i '' 's,FINALDIR="/usr/share,FINALDIR=#{prefix}/share,g' debian/rules
            gmake -O -f debian/rules debian/mini-proveall.out
-           tar zcf $HB_ACL2_OCF .
+           tar zcf $HOMEBREW_ACL2_OCF .
            touch #{prefix}/.placeholder
       SHELL
     end
 
-    if ENV["HB_ACL2_BUILD"] == "books"
-      if ENV["HB_ACL2_CHUNK"]=="1"
+    if ENV["HOMEBREW_ACL2_BUILD"] == "books"
+      if ENV["HOMEBREW_ACL2_CHUNK"]=="1"
         ENV["EXCLUDED_PREFIXES"]=ENV["PF1"]
       end
-      if ENV["HB_ACL2_CHUNK"]=="2"
+      if ENV["HOMEBREW_ACL2_CHUNK"]=="2"
         ENV["EXCLUDED_PREFIXES"]=ENV["PF2"]
       end
-      if ENV["HB_ACL2_CHUNK"]=="3"
+      if ENV["HOMEBREW_ACL2_CHUNK"]=="3"
         ENV["EXCLUDED_PREFIXES"]=ENV["PF3"]
       end
       system <<~SHELL
-           tar zxf $HB_ACL2_ICF
+           tar zxf $HOMEBREW_ACL2_ICF
            gmake -O -f debian/rules build
-           tar zcf $HB_ACL2_OCF .
+           tar zcf $HOMEBREW_ACL2_OCF .
            touch #{prefix}/.placeholder
       SHELL
     end
 
-    if ENV["HB_ACL2_BUILD"] == "install"
+    if ENV["HOMEBREW_ACL2_BUILD"] == "install"
       system <<~SHELL
-           for i in $HB_ACL2_ICF; do
+           for i in $HOMEBREW_ACL2_ICF; do
                tar zxf $i
                cat debian/test.log >>debian/test.log.all
            done
