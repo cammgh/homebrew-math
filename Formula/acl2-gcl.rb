@@ -63,7 +63,7 @@ class Acl2Gcl < Formula
            sed -i '' 's,FINALDIR="/usr/share,FINALDIR=#{prefix}/share,g' debian/rules
            gmake -O -f debian/rules debian/mini-proveall.out
            mkdir -p $(dirname  $HOMEBREW_ACL2_OCF)
-           tar zcf $HOMEBREW_ACL2_OCF .
+           tar zcf $HOMEBREW_ACL2_OCF --exclude=$HOMEBREW_ACL2_OCF .
            touch #{prefix}/.placeholder
       SHELL
     end
@@ -82,7 +82,7 @@ class Acl2Gcl < Formula
            tar zxf $HOMEBREW_ACL2_ICF
            gmake -O -f debian/rules build
            mkdir -p $(dirname  $HOMEBREW_ACL2_OCF)
-           tar zcf $HOMEBREW_ACL2_OCF .
+           tar zcf $HOMEBREW_ACL2_OCF --exclude=$HOMEBREW_ACL2_OCF .
            touch #{prefix}/.placeholder
       SHELL
     end
