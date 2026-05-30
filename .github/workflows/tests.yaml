@@ -99,6 +99,7 @@ jobs:
       - name: Build ACL2
         if: github.ref_name == 'acl2'
         env:
+          HOMEBREW_ALLOWED_ENV_VARIABLES: "HB_ACL2_BUILD,HB_ACL2_OCF"
           HB_ACL2_BUILD: "core"
           HB_ACL2_OCF: "${{github.workspace}}/acl2-core-${{ matrix.arch }}.tar.gz"
         run: |
@@ -178,6 +179,7 @@ jobs:
 
       - name: Verify Book Regression Subset
         env:
+          HOMEBREW_ALLOWED_ENV_VARIABLES: "HB_ACL2_BUILD,HB_ACL2_OCF,HB_ACL2_ICF,HB_ACL2_CHUNK"
           HB_ACL2_BUILD: "books"
           HB_ACL2_CHUNK: ${{ matrix.chunk }}
           HB_ACL2_ICF: "${{github.workspace}}/acl2-core-${{ matrix.arch }}.tar.gz"
@@ -203,7 +205,6 @@ jobs:
   finalize_install:
     needs: books
     if: github.ref_name == 'acl2'
-    runs-on: macos-latest
     strategy:
       matrix:
         include:
@@ -211,6 +212,11 @@ jobs:
             arch: arm64
           - os: macos-15-intel
             arch: x86_64
+
+    runs-on: ${{ matrix.os }}
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+
     steps:
       - name: Download Final Books Artifacts
         uses: actions/download-artifact@v4
@@ -220,6 +226,7 @@ jobs:
 
       - name: Reassemble Workspace and Install
         env:
+          HOMEBREW_ALLOWED_ENV_VARIABLES: "HB_ACL2_BUILD,HB_ACL2_ICF"
           HB_ACL2_BUILD: "install"
           HB_ACL2_ICF: "${{github.workspace}}/acl2-books-${{ matrix.arch }}-*.tar.gz"
         run: |

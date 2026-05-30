@@ -63,6 +63,7 @@ class Acl2Gcl < Formula
            sed -i '' 's,FINALDIR="/usr/share,FINALDIR=#{prefix}/share,g' debian/rules
            gmake -O -f debian/rules debian/mini-proveall.out
            tar zcf $HB_ACL2_OCF .
+           touch #{prefix}/.placeholder
       SHELL
     end
 
@@ -80,6 +81,7 @@ class Acl2Gcl < Formula
            tar zxf $HB_ACL2_ICF
            gmake -O -f debian/rules build
            tar zcf $HB_ACL2_OCF .
+           touch #{prefix}/.placeholder
       SHELL
     end
 
@@ -87,10 +89,9 @@ class Acl2Gcl < Formula
       system <<~SHELL
            for i in $HB_ACL2_ICF; do
                tar zxf $i
-               mv debian/test.log debian/test.log.$i
+               cat debian/test.log >>debian/test.log.all
            done
-           rm debian/test.log
-           cat debian/test.log.* >debian/test.log
+           mv debian/test.log.all debian/test.log
            touch debian/test.log infix-stamp build-stamp
            yes | gmake -f debian/rules install
            sed -i '' 's,/usr/lib/acl2,#{prefix}/lib/acl2,g' debian/acl2/usr/bin/acl2
