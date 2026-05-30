@@ -100,10 +100,11 @@ jobs:
         if: github.ref_name == 'acl2'
         env:
           HOMEBREW_ACL2_BUILD: "core"
-          HOMEBREW_ACL2_OCF: "${{github.workspace}}/acl2-core-${{ matrix.arch }}.tar.gz"
+          HOMEBREW_ACL2_OCF: "acl2-core-${{ matrix.arch }}.tar.gz"
         run: |
           brew audit --formula "cammgh/math/acl2-gcl" --online || echo "Audit failure, continuing"
           brew install --formula --verbose --build-from-source "cammgh/math/acl2-gcl"
+          find $(brew --cache)/../Formula -name "*.tar.gz" -exec cp {} . \;
 
       - name: Upload Core State Artifact
         if: github.ref_name == 'acl2'
@@ -181,9 +182,10 @@ jobs:
           HOMEBREW_ACL2_BUILD: "books"
           HOMEBREW_ACL2_CHUNK: ${{ matrix.chunk }}
           HOMEBREW_ACL2_ICF: "${{github.workspace}}/acl2-core-${{ matrix.arch }}.tar.gz"
-          HOMEBREW_ACL2_OCF: "${{github.workspace}}/acl2-books-${{ matrix.arch }}-${{ matrix.chunk }}.tar.gz"
+          HOMEBREW_ACL2_OCF: "acl2-books-${{ matrix.arch }}-${{ matrix.chunk }}.tar.gz"
         run: |
           brew install --formula --verbose --build-from-source "cammgh/math/acl2-gcl"
+          find $(brew --cache)/../Formula -name "*.tar.gz" -exec cp {} . \;
 
       - name: Upload Verified Books Artifact
         uses: actions/upload-artifact@v4
