@@ -62,6 +62,7 @@ class Acl2Gcl < Formula
            echo "#+(and gcl no-sigfpe)(ignore-errors (si::flush-floating-point-exceptions nil nil (lambda nil nil)))" >>init.lisp
            sed -i '' 's,FINALDIR="/usr/share,FINALDIR=#{prefix}/share,g' debian/rules
            gmake -O -f debian/rules debian/mini-proveall.out
+           mkdir -o $(dirname  $HOMEBREW_ACL2_OCF)
            tar zcf $HOMEBREW_ACL2_OCF .
            touch #{prefix}/.placeholder
       SHELL
@@ -80,6 +81,7 @@ class Acl2Gcl < Formula
       system <<~SHELL
            tar zxf $HOMEBREW_ACL2_ICF
            gmake -O -f debian/rules build
+           mkdir -o $(dirname  $HOMEBREW_ACL2_OCF)
            tar zcf $HOMEBREW_ACL2_OCF .
            touch #{prefix}/.placeholder
       SHELL
