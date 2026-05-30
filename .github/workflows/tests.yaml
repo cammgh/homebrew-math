@@ -18,7 +18,7 @@ jobs:
         include:
           - os: macos-latest
             arch: arm64
-          - os: macos-15
+          - os: macos-15-intel
             arch: x86_64
 
     runs-on: ${{ matrix.os }}
@@ -96,33 +96,135 @@ jobs:
           GCL_MEM_MULTIPLE=1.0 maxima --batch-string="run_testsuite(share_tests=true);"
           #false
 
-      - name: Build ACL2 Stack
+      - name: Build ACL2
         if: github.ref_name == 'acl2'
+        env:
+          HB_ACL2_BUILD: "core"
+          HB_ACL2_OCF: "${{github.workspace}}/acl2-core-${{ matrix.arch }}.tar.gz"
         run: |
           brew audit --formula "cammgh/math/acl2-gcl" --online || echo "Audit failure, continuing"
           brew install --formula --verbose --build-from-source "cammgh/math/acl2-gcl"
-          brew test "cammgh/math/acl2-gcl"
 
-      - name: Build FriCAS Stack
+      - name: Upload Core State Artifact
+        if: github.ref_name == 'acl2'
+        uses: actions/upload-artifact@v4
+        with:
+          name: acl2-core-state-${{ matrix.arch }}
+          path: acl2-core-${{ matrix.arch }}.tar.gz
+
+      - name: Build FriCAS
         if: github.ref_name == 'fricas'
         run: |
           brew audit --formula "cammgh/math/fricas-gcl" --online || echo "Audit failure, continuing"
           brew install --formula --verbose --build-from-source "cammgh/math/fricas-gcl"
           brew test "cammgh/math/fricas-gcl"
 
-      - name: Build HOL88 Stack
+      - name: Build HOL88
         if: github.ref_name == 'hol88'
         run: |
           brew audit --formula "cammgh/math/hol88-gcl" --online || echo "Audit failure, continuing"
           brew install --formula --verbose --build-from-source "cammgh/math/hol88-gcl"
           brew test "cammgh/math/hol88-gcl"
 
-      - name: Build AXIOM Stack
+      - name: Build AXIOM
         if: github.ref_name == 'axiom'
         run: |
           brew audit --formula "cammgh/math/axiom-gcl" --online || echo "Audit failure, continuing"
           brew install --formula --verbose --build-from-source "cammgh/math/axiom-gcl"
           brew test "cammgh/math/axiom-gcl"
+
+      # --- DEB_BUG TRACE ARCHIVE ---
+      - name: Open Debug SSH Session on Failure
+        if: failure()
+        uses: owenthereal/action-upterm@v1
+        with:
+          # Explicitly force a raw bash process instead of tmux
+          upterm-command: /bin/bash --noprofile --norc
+
+  books:
+    needs: build
+    if: github.ref_name == 'acl2'
+    strategy:
+      matrix:
+        include:
+          - os: macos-latest
+            arch: arm64
+            chunk: "1"
+          - os: macos-latest
+            arch: arm64
+            chunk: "2"
+          - os: macos-latest
+            arch: arm64
+            chunk: "3"
+          - os: macos-15-intel
+            arch: x86_64
+            chunk: "1"
+          - os: macos-15-intel
+            arch: x86_64
+            chunk: "2"
+          - os: macos-15-intel
+            arch: x86_64
+            chunk: "3"
+
+    runs-on: ${{ matrix.os }}
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+
+    steps:
+      - name: Download Core State Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: acl2-core-state-${{ matrix.arch }}
+
+      - name: Verify Book Regression Subset
+        env:
+          HB_ACL2_BUILD: "books"
+          HB_ACL2_CHUNK: ${{ matrix.chunk }}
+          HB_ACL2_ICF: "${{github.workspace}}/acl2-core-${{ matrix.arch }}.tar.gz"
+          HB_ACL2_OCF: "${{github.workspace}}/acl2-books-${{ matrix.arch }}-${{ matrix.chunk }}.tar.gz"
+        run: |
+          brew install --formula --verbose --build-from-source "cammgh/math/acl2-gcl"
+
+      - name: Upload Verified Books Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: acl2-books-state-${{ matrix.arch }}-${{ matrix.chunk }}
+          path: acl2-books-${{ matrix.arch }}-${{ matrix.chunk }}.tar.gz
+
+      # --- DEB_BUG TRACE ARCHIVE ---
+      - name: Open Debug SSH Session on Failure
+        if: failure()
+        uses: owenthereal/action-upterm@v1
+        with:
+          # Explicitly force a raw bash process instead of tmux
+          upterm-command: /bin/bash --noprofile --norc
+
+  # Stage 3: Collect artifacts, combine, and execute final install
+  finalize_install:
+    needs: books
+    if: github.ref_name == 'acl2'
+    runs-on: macos-latest
+    strategy:
+      matrix:
+        include:
+          - os: macos-latest
+            arch: arm64
+          - os: macos-15-intel
+            arch: x86_64
+    steps:
+      - name: Download Final Books Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: acl2-books-state-${{ matrix.arch }}-*
+          merge-multiple: true
+
+      - name: Reassemble Workspace and Install
+        env:
+          HB_ACL2_BUILD: "install"
+          HB_ACL2_ICF: "${{github.workspace}}/acl2-books-${{ matrix.arch }}-*.tar.gz"
+        run: |
+          brew install --formula --verbose --build-from-source "cammgh/math/acl2-gcl"
+          brew test "cammgh/math/acl2-gcl"
 
       # --- DEB_BUG TRACE ARCHIVE ---
       - name: Open Debug SSH Session on Failure

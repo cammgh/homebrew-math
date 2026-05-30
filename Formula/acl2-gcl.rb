@@ -21,58 +21,84 @@ class Acl2Gcl < Formula
   end
 
   def install
-    (buildpath/"debian").mkdir
-
-    resource("debian-patches").stage do
-      cp_r ".", buildpath/"debian"
-    end
-
-    series_file = buildpath/"debian/patches/series"
-    if series_file.exist?
-      series_file.each_line do |line|
-        patch_name = line.strip
-        next if patch_name.empty? || patch_name.start_with?("#")
-
-        patch_path = buildpath/"debian/patches"/patch_name
-        if patch_path.exist?
-          opoo "Applying Debian upstream patch: #{patch_name}"
-          system "patch", "-p1", "-i", patch_path
-        end
-      end
-    end
-
     ENV.append "DEB_BUILD_OPTIONS","parallel=#{ENV.make_jobs}"
     ENV.prepend_path "PATH", Formula["findutils"].opt_libexec/"gnubin"
     ENV.prepend_path "PATH", Formula["coreutils"].opt_libexec/"gnubin"
     ENV.prepend_path "PATH", buildpath/"bin"
+    ENV["PF1"]="add-ons proof-builder finite-set-theory cowles defsort doc meta bdd parsers tau hints powerlists unicode ihs build arithmetic hacking intel ordinals sorting oslib proofstyles arithmetic-2 data-structures textbook nonstd arithmetic-3 xdoc defexec clause-processors make-event arithmetic-5 acl2s tools demos misc system coi models std rtl workshops centaur projects "
+    ENV["PF2"]="add-ons proof-builder finite-set-theory cowles defsort doc meta bdd parsers tau hints powerlists unicode ihs build arithmetic hacking intel ordinals sorting oslib proofstyles arithmetic-2 data-structures textbook nonstd arithmetic-3 xdoc defexec clause-processors make-event arithmetic-5 acl2s tools demos misc system coi models std rtl workshops kestrel "
+    ENV["PF3"]="centaur projects kestrel "
 
-    #system "false"
-    system <<~SHELL
-           #mkdir bin #include
-           #echo "#include <stdlib.h>" >include/malloc.h
-           for i in testdir testroot prep installdirs install; do
+    if ENV["HB_ACL2_BUILD"] == "core"
+      (buildpath/"debian").mkdir
+
+      resource("debian-patches").stage do
+        cp_r ".", buildpath/"debian"
+      end
+
+      series_file = buildpath/"debian/patches/series"
+      if series_file.exist?
+        series_file.each_line do |line|
+          patch_name = line.strip
+          next if patch_name.empty? || patch_name.start_with?("#")
+
+          patch_path = buildpath/"debian/patches"/patch_name
+          if patch_path.exist?
+            opoo "Applying Debian upstream patch: #{patch_name}"
+            system "patch", "-p1", "-i", patch_path
+          end
+        end
+      end
+
+      system <<~SHELL
+           for i in testdir testroot prep installdirs; do
                ln -s /usr/bin/true bin/dh_$i
            done
+           echo 'for i in debian/*.install; do awk -v  p=${i%.install} '\''{$2=p "/" $2;printf("mkdir -p %s && cp -a %s %s\n",$2,$1,$2)}'\'' $i |bash -x; done' >bin/dh_install
+           chmod +x bin/dh_install
+           echo 'for i in debian/*.links; do awk -v  p=${i%.links} '\''{$1=p "/" $1;$2=p "/" $2;printf("mkdir -p `dirname %s` && ln -snfr %s %s\n",$2,$1,$2)}'\'' $i |bash -x; done' >bin/dh_link
+           chmod +x bin/dh_link
            ln -s $(which gcl) bin/gcl27
            echo '#+(and gcl no-sigfpe)(ignore-errors (si::flush-floating-point-exceptions nil nil (lambda nil nil)))' >>init.lisp
-           #gmake -f debian/rules configure
+           sed -i '' 's,FINALDIR="/usr/share,FINALDIR=#{prefix}/share,g' debian/rules
+           gmake -O -f debian/rules debian/mini-proveall.out
+           tar zcf $HB_ACL2_OCF .
+      SHELL
+    end
+
+    if ENV["HB_ACL2_BUILD"] == "books"
+      if ENV["HB_ACL2_CHUNK"]=="1"
+        ENV["EXCLUDED_PREFIXES"]=ENV["PF1"]
+      end
+      if ENV["HB_ACL2_CHUNK"]=="2"
+        ENV["EXCLUDED_PREFIXES"]=ENV["PF2"]
+      end
+      if ENV["HB_ACL2_CHUNK"]=="3"
+        ENV["EXCLUDED_PREFIXES"]=ENV["PF3"]
+      end
+      system <<~SHELL
+           tar zxf $HB_ACL2_ICF
            gmake -O -f debian/rules build
-           mkdir -p debian/acl2/usr/bin
-           touch debian/acl2/usr/bin/acl2.sh
-           gmake -f debian/rules install
-           for i in debian/acl2.sh; do
-               sed 's,/usr/lib/acl2,#{prefix}/lib/acl2,g' $i >$i.new
-               chmod +x $i.new
-               mv $i.new $i
+           tar zcf $HB_ACL2_OCF .
+      SHELL
+    end
+
+    if ENV["HB_ACL2_BUILD"] == "install"
+      system <<~SHELL
+           for i in $HB_ACL2_ICF; do
+               tar zxf $i
+               mv debian/test.log debian/test.log.$i
            done
-           for i in debian/*.install; do
-               awk '{gsub("/?usr/","",$2);printf("mkdir -p #{prefix}/%s && cp -r %s #{prefix}/%s\\n",$2,$1,$2)}' $i | bash -x
-           done
-           for i in debian/*.links; do
-               awk '{gsub("/?usr/","",$0);printf("mkdir -p `dirname #{prefix}/%s` && ln -snf #{prefix}/%s #{prefix}/%s\\n",$1,$2)}' $i | bash -x
-           done
-           mv #{prefix}/bin/acl2.sh #{prefix}/bin/acl2
-    SHELL
+           rm debian/test.log
+           cat debian/test.log.* >debian/test.log
+           touch debian/test.log infix-stamp build-stamp
+           yes | gmake -f debian/rules install
+           sed -i '' 's,/usr/lib/acl2,#{prefix}/lib/acl2,g' debian/acl2/usr/bin/acl2
+           for i in $(find debian -type d -name usr); do mv $i/* $i/..; rmdir $i; done
+           mkdir -p #{prefix}
+           for i in debian/*.install; do j=${i%.install}; cp -a $j/* #{prefix}/; done
+      SHELL
+    end
   end
   test do
     output = shell_output("echo '(quit)' | #{bin}/acl2")
