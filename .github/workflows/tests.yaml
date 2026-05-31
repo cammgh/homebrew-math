@@ -18,7 +18,7 @@ jobs:
         include:
           - os: macos-latest
             arch: arm64
-          - os: macos-15-intel
+          - os: macos-15
             arch: x86_64
 
     runs-on: ${{ matrix.os }}
@@ -157,13 +157,13 @@ jobs:
           - os: macos-latest
             arch: arm64
             chunk: "3"
-          - os: macos-15-intel
+          - os: macos-15
             arch: x86_64
             chunk: "1"
-          - os: macos-15-intel
+          - os: macos-15
             arch: x86_64
             chunk: "2"
-          - os: macos-15-intel
+          - os: macos-15
             arch: x86_64
             chunk: "3"
 
@@ -210,7 +210,7 @@ jobs:
         include:
           - os: macos-latest
             arch: arm64
-          - os: macos-15-intel
+          - os: macos-15
             arch: x86_64
 
     runs-on: ${{ matrix.os }}
