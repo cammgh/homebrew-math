@@ -172,6 +172,12 @@ jobs:
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
 
     steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Homebrew Framework
+        uses: Homebrew/actions/setup-homebrew@main
+
       - name: Download Core State Artifact
         uses: actions/download-artifact@v4
         with:
@@ -218,6 +224,12 @@ jobs:
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
 
     steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Homebrew Framework
+        uses: Homebrew/actions/setup-homebrew@main
+
       - name: Download Final Books Artifacts
         uses: actions/download-artifact@v4
         with:
