@@ -178,6 +178,33 @@ jobs:
       - name: Set up Homebrew Framework
         uses: Homebrew/actions/setup-homebrew@main
 
+      # --- LAYER 2: DERIVATIVE BRANCHES LOGIC (DOWNLOAD GCL27 & COMPILE DERIVATIVES) ---
+      - name: Download Precompiled GCL27 from Main Branch
+        uses: dawidd6/action-download-artifact@v9
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: main
+          workflow: tests.yaml
+          name: gcl27-binary-${{ matrix.os }}-${{ matrix.arch }}
+          workflow_conclusion: success
+          path: ./
+        continue-on-error: true # Falls back to source if no artifact exists yet
+
+      - name: Install Local GCL27 Binary
+        run: |
+          BOTTLE_FILE=$(ls -1 gcl27*z | head -n 1)
+          [ "$BOTTLE_FILE" != "" ] || false
+          brew tap-new local/math
+          TAP_DIR=$(brew --repository local/math)
+          cp ./Formula/gcl27.rb "$TAP_DIR/Formula/gcl27.rb"
+          BOTTLE_SHA=$(shasum -a 256 $BOTTLE_FILE | awk '{print $1}')
+          cp $BOTTLE_FILE $TAP_DIR/$(echo $BOTTLE_FILE | sed 's,--,-,1')
+          cd $TAP_DIR
+          cp Formula/gcl27.rb Formula/gcl27.rb.old
+          sed -i '' "s@root_url .*@root_url \"file://${TAP_DIR}\"@g" Formula/gcl27.rb
+          sed -i '' "s/# sha256 cellar.*/sha256 cellar: :any, arm64_sequoia: \"${BOTTLE_SHA}\"/g" Formula/gcl27.rb
+          brew install --formula ./Formula/gcl27.rb
+
       - name: Download Core State Artifact
         uses: actions/download-artifact@v4
         with:
@@ -229,6 +256,33 @@ jobs:
 
       - name: Set up Homebrew Framework
         uses: Homebrew/actions/setup-homebrew@main
+
+      # --- LAYER 2: DERIVATIVE BRANCHES LOGIC (DOWNLOAD GCL27 & COMPILE DERIVATIVES) ---
+      - name: Download Precompiled GCL27 from Main Branch
+        uses: dawidd6/action-download-artifact@v9
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: main
+          workflow: tests.yaml
+          name: gcl27-binary-${{ matrix.os }}-${{ matrix.arch }}
+          workflow_conclusion: success
+          path: ./
+        continue-on-error: true # Falls back to source if no artifact exists yet
+
+      - name: Install Local GCL27 Binary
+        run: |
+          BOTTLE_FILE=$(ls -1 gcl27*z | head -n 1)
+          [ "$BOTTLE_FILE" != "" ] || false
+          brew tap-new local/math
+          TAP_DIR=$(brew --repository local/math)
+          cp ./Formula/gcl27.rb "$TAP_DIR/Formula/gcl27.rb"
+          BOTTLE_SHA=$(shasum -a 256 $BOTTLE_FILE | awk '{print $1}')
+          cp $BOTTLE_FILE $TAP_DIR/$(echo $BOTTLE_FILE | sed 's,--,-,1')
+          cd $TAP_DIR
+          cp Formula/gcl27.rb Formula/gcl27.rb.old
+          sed -i '' "s@root_url .*@root_url \"file://${TAP_DIR}\"@g" Formula/gcl27.rb
+          sed -i '' "s/# sha256 cellar.*/sha256 cellar: :any, arm64_sequoia: \"${BOTTLE_SHA}\"/g" Formula/gcl27.rb
+          brew install --formula ./Formula/gcl27.rb
 
       - name: Download Final Books Artifacts
         uses: actions/download-artifact@v4

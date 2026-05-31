@@ -79,7 +79,9 @@ class Acl2Gcl < Formula
       end
       system <<~SHELL
            tar zxf $HOMEBREW_ACL2_ICF
-           gmake -O -f debian/rules build
+           rm -f debian/test.log
+           gmake -O -f debian/rules debian/test.log
+           touch infix-stamp build-stamp
            mkdir -p #{prefix}
            tar zcf #{prefix}/$HOMEBREW_ACL2_OCF .
       SHELL
