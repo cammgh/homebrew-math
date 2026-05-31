@@ -150,22 +150,8 @@ jobs:
         include:
           - os: macos-latest
             arch: arm64
-            chunk: "1"
-          - os: macos-latest
-            arch: arm64
-            chunk: "2"
-          - os: macos-latest
-            arch: arm64
-            chunk: "3"
           - os: macos-15
             arch: x86_64
-            chunk: "1"
-          - os: macos-15
-            arch: x86_64
-            chunk: "2"
-          - os: macos-15
-            arch: x86_64
-            chunk: "3"
 
     runs-on: ${{ matrix.os }}
     env:
@@ -213,9 +199,8 @@ jobs:
       - name: Verify Book Regression Subset
         env:
           HOMEBREW_ACL2_BUILD: "books"
-          HOMEBREW_ACL2_CHUNK: ${{ matrix.chunk }}
           HOMEBREW_ACL2_ICF: "${{github.workspace}}/acl2-core-${{ matrix.arch }}.tar.gz"
-          HOMEBREW_ACL2_OCF: "acl2-books-${{ matrix.arch }}-${{ matrix.chunk }}.tar.gz"
+          HOMEBREW_ACL2_OCF: "acl2-books-${{ matrix.arch }}-1.tar.gz"
         run: |
           brew install --formula --verbose --build-from-source "cammgh/math/acl2-gcl"
           find $(brew --prefix) -name "acl2-books-${{ matrix.arch }}-${{ matrix.chunk }}.tar.gz" -exec cp {} . \;
@@ -223,8 +208,162 @@ jobs:
       - name: Upload Verified Books Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: acl2-books-state-${{ matrix.arch }}-${{ matrix.chunk }}
-          path: acl2-books-${{ matrix.arch }}-${{ matrix.chunk }}.tar.gz
+          name: acl2-books-state-${{ matrix.arch }}-1
+          path: acl2-books-${{ matrix.arch }}-1.tar.gz
+
+      # --- DEB_BUG TRACE ARCHIVE ---
+      - name: Open Debug SSH Session on Failure
+        if: failure()
+        uses: owenthereal/action-upterm@v1
+        with:
+          # Explicitly force a raw bash process instead of tmux
+          upterm-command: /bin/bash --noprofile --norc
+
+  books1:
+    needs: books
+    if: github.ref_name == 'acl2'
+    strategy:
+      matrix:
+        include:
+          - os: macos-latest
+            arch: arm64
+          - os: macos-15
+            arch: x86_64
+
+    runs-on: ${{ matrix.os }}
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Homebrew Framework
+        uses: Homebrew/actions/setup-homebrew@main
+
+      # --- LAYER 2: DERIVATIVE BRANCHES LOGIC (DOWNLOAD GCL27 & COMPILE DERIVATIVES) ---
+      - name: Download Precompiled GCL27 from Main Branch
+        uses: dawidd6/action-download-artifact@v9
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: main
+          workflow: tests.yaml
+          name: gcl27-binary-${{ matrix.os }}-${{ matrix.arch }}
+          workflow_conclusion: success
+          path: ./
+        continue-on-error: true # Falls back to source if no artifact exists yet
+
+      - name: Install Local GCL27 Binary
+        run: |
+          BOTTLE_FILE=$(ls -1 gcl27*z | head -n 1)
+          [ "$BOTTLE_FILE" != "" ] || false
+          brew tap-new local/math
+          TAP_DIR=$(brew --repository local/math)
+          cp ./Formula/gcl27.rb "$TAP_DIR/Formula/gcl27.rb"
+          BOTTLE_SHA=$(shasum -a 256 $BOTTLE_FILE | awk '{print $1}')
+          cp $BOTTLE_FILE $TAP_DIR/$(echo $BOTTLE_FILE | sed 's,--,-,1')
+          cd $TAP_DIR
+          cp Formula/gcl27.rb Formula/gcl27.rb.old
+          sed -i '' "s@root_url .*@root_url \"file://${TAP_DIR}\"@g" Formula/gcl27.rb
+          sed -i '' "s/# sha256 cellar.*/sha256 cellar: :any, arm64_sequoia: \"${BOTTLE_SHA}\"/g" Formula/gcl27.rb
+          brew install --formula ./Formula/gcl27.rb
+
+      - name: Download Core State Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: acl2-books-state-1
+
+      - name: Verify Book Regression Subset
+        env:
+          HOMEBREW_ACL2_BUILD: "books"
+          HOMEBREW_ACL2_ICF: "${{github.workspace}}/acl2-books-${{ matrix.arch }}-1.tar.gz"
+          HOMEBREW_ACL2_OCF: "acl2-books-${{ matrix.arch }}-2.tar.gz"
+        run: |
+          brew install --formula --verbose --build-from-source "cammgh/math/acl2-gcl"
+          find $(brew --prefix) -name "acl2-books-${{ matrix.arch }}-${{ matrix.chunk }}.tar.gz" -exec cp {} . \;
+
+      - name: Upload Verified Books Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: acl2-books-state-${{ matrix.arch }}-2
+          path: acl2-books-${{ matrix.arch }}-2.tar.gz
+
+      # --- DEB_BUG TRACE ARCHIVE ---
+      - name: Open Debug SSH Session on Failure
+        if: failure()
+        uses: owenthereal/action-upterm@v1
+        with:
+          # Explicitly force a raw bash process instead of tmux
+          upterm-command: /bin/bash --noprofile --norc
+
+  books2:
+    needs: books1
+    if: github.ref_name == 'acl2'
+    strategy:
+      matrix:
+        include:
+          - os: macos-latest
+            arch: arm64
+          - os: macos-15
+            arch: x86_64
+
+    runs-on: ${{ matrix.os }}
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Homebrew Framework
+        uses: Homebrew/actions/setup-homebrew@main
+
+      # --- LAYER 2: DERIVATIVE BRANCHES LOGIC (DOWNLOAD GCL27 & COMPILE DERIVATIVES) ---
+      - name: Download Precompiled GCL27 from Main Branch
+        uses: dawidd6/action-download-artifact@v9
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: main
+          workflow: tests.yaml
+          name: gcl27-binary-${{ matrix.os }}-${{ matrix.arch }}
+          workflow_conclusion: success
+          path: ./
+        continue-on-error: true # Falls back to source if no artifact exists yet
+
+      - name: Install Local GCL27 Binary
+        run: |
+          BOTTLE_FILE=$(ls -1 gcl27*z | head -n 1)
+          [ "$BOTTLE_FILE" != "" ] || false
+          brew tap-new local/math
+          TAP_DIR=$(brew --repository local/math)
+          cp ./Formula/gcl27.rb "$TAP_DIR/Formula/gcl27.rb"
+          BOTTLE_SHA=$(shasum -a 256 $BOTTLE_FILE | awk '{print $1}')
+          cp $BOTTLE_FILE $TAP_DIR/$(echo $BOTTLE_FILE | sed 's,--,-,1')
+          cd $TAP_DIR
+          cp Formula/gcl27.rb Formula/gcl27.rb.old
+          sed -i '' "s@root_url .*@root_url \"file://${TAP_DIR}\"@g" Formula/gcl27.rb
+          sed -i '' "s/# sha256 cellar.*/sha256 cellar: :any, arm64_sequoia: \"${BOTTLE_SHA}\"/g" Formula/gcl27.rb
+          brew install --formula ./Formula/gcl27.rb
+
+      - name: Download Core State Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: acl2-books-state-2
+
+      - name: Verify Book Regression Subset
+        env:
+          HOMEBREW_ACL2_BUILD: "books"
+          HOMEBREW_ACL2_ICF: "${{github.workspace}}/acl2-books-${{ matrix.arch }}-2.tar.gz"
+          HOMEBREW_ACL2_OCF: "acl2-books-${{ matrix.arch }}-3.tar.gz"
+        run: |
+          brew install --formula --verbose --build-from-source "cammgh/math/acl2-gcl"
+          find $(brew --prefix) -name "acl2-books-${{ matrix.arch }}-${{ matrix.chunk }}.tar.gz" -exec cp {} . \;
+
+      - name: Upload Verified Books Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: acl2-books-state-${{ matrix.arch }}-3
+          path: acl2-books-${{ matrix.arch }}-3.tar.gz
 
       # --- DEB_BUG TRACE ARCHIVE ---
       - name: Open Debug SSH Session on Failure
@@ -236,7 +375,7 @@ jobs:
 
   # Stage 3: Collect artifacts, combine, and execute final install
   finalize_install:
-    needs: books
+    needs: books2
     if: github.ref_name == 'acl2'
     strategy:
       matrix:
@@ -287,13 +426,12 @@ jobs:
       - name: Download Final Books Artifacts
         uses: actions/download-artifact@v4
         with:
-          pattern: acl2-books-state-${{ matrix.arch }}-*
-          merge-multiple: true
+          name: acl2-books-state-3
 
       - name: Reassemble Workspace and Install
         env:
           HOMEBREW_ACL2_BUILD: "install"
-          HOMEBREW_ACL2_ICF: "${{github.workspace}}/acl2-books-${{ matrix.arch }}-*.tar.gz"
+          HOMEBREW_ACL2_ICF: "${{github.workspace}}/acl2-books-${{ matrix.arch }}-3.tar.gz"
         run: |
           brew install --formula --verbose --build-from-source "cammgh/math/acl2-gcl"
           brew test "cammgh/math/acl2-gcl"

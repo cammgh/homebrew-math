@@ -25,9 +25,9 @@ class Acl2Gcl < Formula
     ENV.prepend_path "PATH", Formula["findutils"].opt_libexec/"gnubin"
     ENV.prepend_path "PATH", Formula["coreutils"].opt_libexec/"gnubin"
     ENV.prepend_path "PATH", buildpath/"bin"
-    ENV["PF1"]="add-ons proof-builder finite-set-theory cowles defsort doc meta bdd parsers tau hints powerlists unicode ihs build arithmetic hacking intel ordinals sorting oslib proofstyles arithmetic-2 data-structures textbook nonstd arithmetic-3 xdoc defexec clause-processors make-event arithmetic-5 acl2s tools demos misc system coi models std rtl workshops centaur projects "
-    ENV["PF2"]="add-ons proof-builder finite-set-theory cowles defsort doc meta bdd parsers tau hints powerlists unicode ihs build arithmetic hacking intel ordinals sorting oslib proofstyles arithmetic-2 data-structures textbook nonstd arithmetic-3 xdoc defexec clause-processors make-event arithmetic-5 acl2s tools demos misc system coi models std rtl workshops kestrel "
-    ENV["PF3"]="centaur projects kestrel "
+    #ENV["PF1"]="add-ons proof-builder finite-set-theory cowles defsort doc meta bdd parsers tau hints powerlists unicode ihs build arithmetic hacking intel ordinals sorting oslib proofstyles arithmetic-2 data-structures textbook nonstd arithmetic-3 xdoc defexec clause-processors make-event arithmetic-5 acl2s tools demos misc system coi models std rtl workshops centaur projects "
+    #ENV["PF2"]="add-ons proof-builder finite-set-theory cowles defsort doc meta bdd parsers tau hints powerlists unicode ihs build arithmetic hacking intel ordinals sorting oslib proofstyles arithmetic-2 data-structures textbook nonstd arithmetic-3 xdoc defexec clause-processors make-event arithmetic-5 acl2s tools demos misc system coi models std rtl workshops kestrel "
+    #ENV["PF3"]="centaur projects kestrel "
 
     if ENV["HOMEBREW_ACL2_BUILD"] == "core"
       (buildpath/"debian").mkdir
@@ -68,19 +68,12 @@ class Acl2Gcl < Formula
     end
 
     if ENV["HOMEBREW_ACL2_BUILD"] == "books"
-      if ENV["HOMEBREW_ACL2_CHUNK"]=="1"
-        ENV["EXCLUDED_PREFIXES"]=ENV["PF1"]
-      end
-      if ENV["HOMEBREW_ACL2_CHUNK"]=="2"
-        ENV["EXCLUDED_PREFIXES"]=ENV["PF2"]
-      end
-      if ENV["HOMEBREW_ACL2_CHUNK"]=="3"
-        ENV["EXCLUDED_PREFIXES"]=ENV["PF3"]
-      end
       system <<~SHELL
            tar zxf $HOMEBREW_ACL2_ICF
            rm -f debian/test.log
-           gmake -O -f debian/rules debian/test.log
+           gmake -O -f debian/rules debian/test.log & j=\$! ; (sleep 19800; kill \$j) & k=\$! ; wait \$j ; kill \$k
+           [ -e debian/saved_acl2 ] || mv debian/saved_acl2.ori debian/saved_acl2
+           cat debian/test.log >>debian/test.log.all
            touch infix-stamp build-stamp
            mkdir -p #{prefix}
            tar zcf #{prefix}/$HOMEBREW_ACL2_OCF .
@@ -89,10 +82,7 @@ class Acl2Gcl < Formula
 
     if ENV["HOMEBREW_ACL2_BUILD"] == "install"
       system <<~SHELL
-           for i in $HOMEBREW_ACL2_ICF; do
-               tar zxf $i
-               cat debian/test.log >>debian/test.log.all
-           done
+           tar zxf $HOMEBREW_ACL2_ICF
            mv debian/test.log.all debian/test.log
            touch debian/test.log infix-stamp build-stamp
            yes | gmake -f debian/rules install
