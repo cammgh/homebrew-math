@@ -60,7 +60,7 @@ class Acl2Gcl < Formula
            chmod +x bin/dh_link
            ln -s $(which gcl) bin/gcl27
            echo "#+(and gcl no-sigfpe)(ignore-errors (si::flush-floating-point-exceptions nil nil (lambda nil nil)))" >>init.lisp
-           sed -i '' 's,FINALDIR="/usr/share,FINALDIR=#{prefix}/share,g' debian/rules
+           sed -i '' 's,FINALDIR="/usr/share,FINALDIR="#{prefix}/share,g' debian/rules
            gmake -O -f debian/rules debian/mini-proveall.out
            mkdir -p #{prefix}
            tar zcf #{prefix}/$HOMEBREW_ACL2_OCF .
