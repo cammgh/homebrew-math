@@ -203,7 +203,7 @@ jobs:
           HOMEBREW_ACL2_OCF: "acl2-books-${{ matrix.arch }}-1.tar.gz"
         run: |
           brew install --formula --verbose --build-from-source "cammgh/math/acl2-gcl"
-          find $(brew --prefix) -name "acl2-books-${{ matrix.arch }}-${{ matrix.chunk }}.tar.gz" -exec cp {} . \;
+          find $(brew --prefix) -name "acl2-books-${{ matrix.arch }}-1.tar.gz" -exec cp {} . \;
 
       - name: Upload Verified Books Artifact
         uses: actions/upload-artifact@v4
@@ -280,7 +280,7 @@ jobs:
           HOMEBREW_ACL2_OCF: "acl2-books-${{ matrix.arch }}-2.tar.gz"
         run: |
           brew install --formula --verbose --build-from-source "cammgh/math/acl2-gcl"
-          find $(brew --prefix) -name "acl2-books-${{ matrix.arch }}-${{ matrix.chunk }}.tar.gz" -exec cp {} . \;
+          find $(brew --prefix) -name "acl2-books-${{ matrix.arch }}-2.tar.gz" -exec cp {} . \;
 
       - name: Upload Verified Books Artifact
         uses: actions/upload-artifact@v4
@@ -357,7 +357,7 @@ jobs:
           HOMEBREW_ACL2_OCF: "acl2-books-${{ matrix.arch }}-3.tar.gz"
         run: |
           brew install --formula --verbose --build-from-source "cammgh/math/acl2-gcl"
-          find $(brew --prefix) -name "acl2-books-${{ matrix.arch }}-${{ matrix.chunk }}.tar.gz" -exec cp {} . \;
+          find $(brew --prefix) -name "acl2-books-${{ matrix.arch }}-3.tar.gz" -exec cp {} . \;
 
       - name: Upload Verified Books Artifact
         uses: actions/upload-artifact@v4
