@@ -70,7 +70,11 @@ class Acl2Gcl < Formula
     if ENV["HOMEBREW_ACL2_BUILD"] == "books"
       system <<~SHELL
            tar zxf $HOMEBREW_ACL2_ICF
-           gmake -O -f debian/rules build & j=\$! ; (sleep 300; ! [ -e saved_acl2.ori ] || (cat debian/test.log >>debian/test.log.all; kill -\$j; rm -f debian/test.log; mv saved_acl2.ori saved_acl2) & k=\$!; ! wait \$j || kill \$k
+           gmake -O -f debian/rules build &
+           j=\$!
+           (sleep 300; ! [ -e saved_acl2.ori ] || (cat debian/test.log >>debian/test.log.all; kill -\$j; rm -f debian/test.log; mv saved_acl2.ori saved_acl2)) &
+           k=\$!
+           (wait \$j && kill \$k) || wait \$k
            mkdir -p #{prefix}
            tar zcf #{prefix}/$HOMEBREW_ACL2_OCF .
       SHELL
