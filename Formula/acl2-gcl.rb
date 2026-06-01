@@ -72,7 +72,7 @@ class Acl2Gcl < Formula
            tar zxf $HOMEBREW_ACL2_ICF
            gmake -O -f debian/rules build &
            j=\$!
-           (sleep 300; ! [ -e saved_acl2.ori ] || (cat debian/test.log >>debian/test.log.all; kill -\$j; rm -f debian/test.log; mv saved_acl2.ori saved_acl2)) &
+           (sleep 300; ! [ -e saved_acl2.ori ] || (cat debian/test.log >>debian/test.log.all; pkill -g \$(ps -p \$j -o pgid=); rm -f debian/test.log; mv saved_acl2.ori saved_acl2)) &
            k=\$!
            (wait \$j && kill \$k) || wait \$k
            mkdir -p #{prefix}
