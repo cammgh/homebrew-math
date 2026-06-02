@@ -54,9 +54,9 @@ class Acl2Gcl < Formula
            for i in testdir testroot prep installdirs; do
                ln -s /usr/bin/true bin/dh_$i
            done
-           echo "for i in debian/*.install; do awk -v  p=\\${i%.install} '{\\$2=p \\"/\\" \\$2;printf(\\"mkdir -p %s && cp -a %s %s\\\\n\\",\\$2,\\$1,\\$2)}' $i |bash -x; done" >bin/dh_install
+           echo "for i in debian/*.install; do awk -v  p=\\${i%.install} '{\\$2=p \\"/\\" \\$2;printf(\\"mkdir -p %s && cp -a %s %s%c\\",\\$2,\\$1,\\$2,10)}' $i |bash -x; done" >bin/dh_install
            chmod +x bin/dh_install
-           echo "for i in debian/*.links; do awk -v  p=\\${i%.links} '{\\$1=p \\"/\\" \\$1;\\$2=p \\"/\\" \\$2;printf(\\"mkdir -p `dirname %s` && ln -snfr %s %s\\\\n\\",\\$2,\\$1,\\$2)}' $i |bash -x; done" >bin/dh_link
+           echo "for i in debian/*.links; do awk -v  p=\\${i%.links} '{\\$1=p \\"/\\" \\$1;\\$2=p \\"/\\" \\$2;printf(\\"mkdir -p `dirname %s` && ln -snfr %s %s\\",\\$2,\\$1,\\$2,10)}' $i |bash -x; done" >bin/dh_link
            chmod +x bin/dh_link
            ln -s $(which gcl) bin/gcl27
            echo "#+(and gcl no-sigfpe)(ignore-errors (si::flush-floating-point-exceptions nil nil (lambda nil nil)))" >>init.lisp
