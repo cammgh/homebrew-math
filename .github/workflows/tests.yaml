@@ -71,7 +71,7 @@ jobs:
         run: |
           BOTTLE_FILE=$(ls -1 gcl27*z | head -n 1)
           [ "$BOTTLE_FILE" != "" ] || false
-	  BOTTLE_ARCH=$(echo "$BOTTLE_FILE" | grep -oE '(arm64_tahoe|tahoe)\.bottle' | cut -d'.' -f1)
+          BOTTLE_ARCH=$(echo "$BOTTLE_FILE" | grep -oE '(arm64_tahoe|tahoe)\.bottle' | cut -d'.' -f1)
           brew tap-new local/math
           TAP_DIR=$(brew --repository local/math)
           cp ./Formula/gcl27.rb "$TAP_DIR/Formula/gcl27.rb"
@@ -181,7 +181,7 @@ jobs:
         run: |
           BOTTLE_FILE=$(ls -1 gcl27*z | head -n 1)
           [ "$BOTTLE_FILE" != "" ] || false
-	  BOTTLE_ARCH=$(echo "$BOTTLE_FILE" | grep -oE '(arm64_tahoe|tahoe)\.bottle' | cut -d'.' -f1)
+          BOTTLE_ARCH=$(echo "$BOTTLE_FILE" | grep -oE '(arm64_tahoe|tahoe)\.bottle' | cut -d'.' -f1)
           brew tap-new local/math
           TAP_DIR=$(brew --repository local/math)
           cp ./Formula/gcl27.rb "$TAP_DIR/Formula/gcl27.rb"
@@ -259,7 +259,7 @@ jobs:
         run: |
           BOTTLE_FILE=$(ls -1 gcl27*z | head -n 1)
           [ "$BOTTLE_FILE" != "" ] || false
-	  BOTTLE_ARCH=$(echo "$BOTTLE_FILE" | grep -oE '(arm64_tahoe|tahoe)\.bottle' | cut -d'.' -f1)
+          BOTTLE_ARCH=$(echo "$BOTTLE_FILE" | grep -oE '(arm64_tahoe|tahoe)\.bottle' | cut -d'.' -f1)
           brew tap-new local/math
           TAP_DIR=$(brew --repository local/math)
           cp ./Formula/gcl27.rb "$TAP_DIR/Formula/gcl27.rb"
@@ -337,7 +337,7 @@ jobs:
         run: |
           BOTTLE_FILE=$(ls -1 gcl27*z | head -n 1)
           [ "$BOTTLE_FILE" != "" ] || false
-	  BOTTLE_ARCH=$(echo "$BOTTLE_FILE" | grep -oE '(arm64_tahoe|tahoe)\.bottle' | cut -d'.' -f1)
+          BOTTLE_ARCH=$(echo "$BOTTLE_FILE" | grep -oE '(arm64_tahoe|tahoe)\.bottle' | cut -d'.' -f1)
           brew tap-new local/math
           TAP_DIR=$(brew --repository local/math)
           cp ./Formula/gcl27.rb "$TAP_DIR/Formula/gcl27.rb"
@@ -416,7 +416,7 @@ jobs:
         run: |
           BOTTLE_FILE=$(ls -1 gcl27*z | head -n 1)
           [ "$BOTTLE_FILE" != "" ] || false
-	  BOTTLE_ARCH=$(echo "$BOTTLE_FILE" | grep -oE '(arm64_tahoe|tahoe)\.bottle' | cut -d'.' -f1)
+          BOTTLE_ARCH=$(echo "$BOTTLE_FILE" | grep -oE '(arm64_tahoe|tahoe)\.bottle' | cut -d'.' -f1)
           brew tap-new local/math
           TAP_DIR=$(brew --repository local/math)
           cp ./Formula/gcl27.rb "$TAP_DIR/Formula/gcl27.rb"
