@@ -79,8 +79,8 @@ jobs:
           cp $BOTTLE_FILE $TAP_DIR/$(echo $BOTTLE_FILE | sed 's,--,-,1')
           #cd $TAP_DIR
           #cp Formula/gcl27.rb Formula/gcl27.rb.old
-          sed -i '' "s@root_url .*@root_url \"file://${TAP_DIR}\"@g" Formula/gcl27.rb
-          sed -i '' "s/# sha256 cellar.*/sha256 cellar: :any, $BOTTLE_ARCH: \"${BOTTLE_SHA}\"/g" Formula/gcl27.rb
+          sed -i '' "s@root_url .*@root_url \"file://${TAP_DIR}\"@g" $TAP_DIR/Formula/gcl27.rb
+          sed -i '' "s/# sha256 cellar.*/sha256 cellar: :any, $BOTTLE_ARCH: \"${BOTTLE_SHA}\"/g" $TAP_DIR/Formula/gcl27.rb
           brew untap cammgh/math || true
           brew install --formula $TAP_DIR/Formula/gcl27.rb
 
