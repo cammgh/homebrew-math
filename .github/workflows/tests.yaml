@@ -81,7 +81,7 @@ jobs:
           cp Formula/gcl27.rb Formula/gcl27.rb.old
           sed -i '' "s@root_url .*@root_url \"file://${TAP_DIR}\"@g" Formula/gcl27.rb
           sed -i '' "s/# sha256 cellar.*/sha256 cellar: :any, $BOTTLE_ARCH: \"${BOTTLE_SHA}\"/g" Formula/gcl27.rb
-          brew install --formula ./Formula/gcl27.rb
+          brew install --formula $(pwd)/Formula/gcl27.rb
 
       - name: Build Maxima
         if: github.ref_name == 'maxima'
@@ -191,7 +191,7 @@ jobs:
           cp Formula/gcl27.rb Formula/gcl27.rb.old
           sed -i '' "s@root_url .*@root_url \"file://${TAP_DIR}\"@g" Formula/gcl27.rb
           sed -i '' "s/# sha256 cellar.*/sha256 cellar: :any, $BOTTLE_ARCH: \"${BOTTLE_SHA}\"/g" Formula/gcl27.rb
-          brew install --formula ./Formula/gcl27.rb
+          brew install --formula $(pwd)/Formula/gcl27.rb
 
       - name: Download Core State Artifact
         uses: actions/download-artifact@v4
@@ -269,7 +269,7 @@ jobs:
           cp Formula/gcl27.rb Formula/gcl27.rb.old
           sed -i '' "s@root_url .*@root_url \"file://${TAP_DIR}\"@g" Formula/gcl27.rb
           sed -i '' "s/# sha256 cellar.*/sha256 cellar: :any, $BOTTLE_ARCH: \"${BOTTLE_SHA}\"/g" Formula/gcl27.rb
-          brew install --formula ./Formula/gcl27.rb
+          brew install --formula $(pwd)/Formula/gcl27.rb
 
       - name: Download Core State Artifact
         uses: actions/download-artifact@v4
@@ -347,7 +347,7 @@ jobs:
           cp Formula/gcl27.rb Formula/gcl27.rb.old
           sed -i '' "s@root_url .*@root_url \"file://${TAP_DIR}\"@g" Formula/gcl27.rb
           sed -i '' "s/# sha256 cellar.*/sha256 cellar: :any, $BOTTLE_ARCH: \"${BOTTLE_SHA}\"/g" Formula/gcl27.rb
-          brew install --formula ./Formula/gcl27.rb
+          brew install --formula $(pwd)/Formula/gcl27.rb
 
       - name: Download Core State Artifact
         uses: actions/download-artifact@v4
@@ -426,7 +426,7 @@ jobs:
           cp Formula/gcl27.rb Formula/gcl27.rb.old
           sed -i '' "s@root_url .*@root_url \"file://${TAP_DIR}\"@g" Formula/gcl27.rb
           sed -i '' "s/# sha256 cellar.*/sha256 cellar: :any, $BOTTLE_ARCH: \"${BOTTLE_SHA}\"/g" Formula/gcl27.rb
-          brew install --formula ./Formula/gcl27.rb
+          brew install --formula $(pwd)/Formula/gcl27.rb
 
       - name: Download Final Books Artifacts
         uses: actions/download-artifact@v4
