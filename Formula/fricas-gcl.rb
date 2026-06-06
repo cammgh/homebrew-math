@@ -38,10 +38,9 @@ class FricasGcl < Formula
       end
     end
 
-    gcl_bin = "/opt/homebrew/bin/gcl"
     configure_args = %W[
       --prefix=#{prefix}
-      --with-lisp=#{gcl_bin}
+      --with-lisp=gcl
     ]
 
     system "./configure", *configure_args
