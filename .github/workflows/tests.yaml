@@ -83,7 +83,7 @@ jobs:
           sed -i '' "s/# sha256 cellar.*/sha256 cellar: :any, $BOTTLE_ARCH: \"${BOTTLE_SHA}\"/g" Formula/gcl27.rb
           brew untap cammgh/math || true
           brew install --formula ./Formula/gcl27.rb
-          brew tap-new cammgh/math --force
+          brew tap-new cammgh/math
           NEW_TAP_PATH=$(brew --repository cammgh/math)
           rm -rf "$NEW_TAP_PATH"
           ln -s "$RUNNER_WORKSPACE" "$NEW_TAP_PATH"
