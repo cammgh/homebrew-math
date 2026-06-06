@@ -84,7 +84,13 @@ jobs:
           brew untap cammgh/math || true
           brew install --formula $(pwd)/Formula/gcl27.rb
           brew untap cammgh/math || true
-          brew tap cammgh/math https://github.com --branch="${{github.head_ref || github.ref_name}}" --force
+          NEW_TAP_PATH="/usr/local/Homebrew/Library/Taps/cammgh/homebrew-math"
+          if [ "$BOTTLE_ARCH" = "arm64_tahoe" ]; then
+            NEW_TAP_PATH="/opt/homebrew/Library/Taps/cammgh/homebrew-math"
+          fi
+          mkdir -p "$(dirname "$NEW_TAP_PATH")"
+          ln -s "$RUNNER_WORKSPACE" "$NEW_TAP_PATH"
+          brew tap cammgh/math --force-auto-update || true
 
       - name: Build Maxima
         if: github.ref_name == 'maxima'
