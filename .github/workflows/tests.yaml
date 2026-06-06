@@ -85,8 +85,8 @@ jobs:
           brew install --formula ./Formula/gcl27.rb
           brew tap-new cammgh/math
           NEW_TAP_PATH=$(brew --repository cammgh/math)
-          rm -rf "$NEW_TAP_PATH"
-          ln -s "$RUNNER_WORKSPACE" "$NEW_TAP_PATH"
+          rm -rf "$NEW_TAP_PATH/Formula" "$NEW_TAP_PATH/HomebrewFormula"
+          ln -s "$RUNNER_WORKSPACE/Formula" "$NEW_TAP_PATH/Formula"
 
       - name: Build Maxima
         if: github.ref_name == 'maxima'
