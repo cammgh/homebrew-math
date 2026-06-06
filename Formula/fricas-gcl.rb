@@ -16,8 +16,8 @@ class FricasGcl < Formula
   end
 
   def install
-    ENV.deparallelize
-    #ENV["GCL_MULTIPROCESS_MEMORY_POOL"] = buildpath
+    #ENV.deparallelize
+    ENV["GCL_MULTIPROCESS_MEMORY_POOL"] = buildpath
 
     (buildpath/"debian").mkdir
 
