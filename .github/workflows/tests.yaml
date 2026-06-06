@@ -82,15 +82,11 @@ jobs:
           sed -i '' "s@root_url .*@root_url \"file://$TAP_DIR\"@g" Formula/gcl27.rb
           sed -i '' "s/# sha256 cellar.*/sha256 cellar: :any, $BOTTLE_ARCH: \"${BOTTLE_SHA}\"/g" Formula/gcl27.rb
           brew untap cammgh/math || true
-          brew install --formula $(pwd)/Formula/gcl27.rb
-          brew untap cammgh/math || true
-          NEW_TAP_PATH="/usr/local/Homebrew/Library/Taps/cammgh/homebrew-math"
-          if [ "$BOTTLE_ARCH" = "arm64_tahoe" ]; then
-            NEW_TAP_PATH="/opt/homebrew/Library/Taps/cammgh/homebrew-math"
-          fi
-          mkdir -p "$(dirname "$NEW_TAP_PATH")"
+          brew install --formula ./Formula/gcl27.rb
+          brew tap-new cammgh/math --force
+          NEW_TAP_PATH=$(brew --repository cammgh/math)
+          rm -rf "$NEW_TAP_PATH"
           ln -s "$RUNNER_WORKSPACE" "$NEW_TAP_PATH"
-          brew tap cammgh/math --force-auto-update || true
 
       - name: Build Maxima
         if: github.ref_name == 'maxima'
