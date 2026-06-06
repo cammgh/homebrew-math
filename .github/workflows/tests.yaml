@@ -129,9 +129,9 @@ jobs:
       - name: Build HOL88
         if: github.ref_name == 'hol88'
         run: |
-          brew audit --formula "$(pwd)/Formula/hol88-gcl" --online || echo "Audit failure, continuing"
-          brew install --formula --verbose --build-from-source "$(pwd)/Formula/hol88-gcl"
-          brew test "$(pwd)/Formula/hol88-gcl"
+          brew audit --formula "$(pwd)/Formula/hol88-gcl.rb" --online || echo "Audit failure, continuing"
+          brew install --formula --verbose --build-from-source "$(pwd)/Formula/hol88-gcl.rb"
+          brew test "$(pwd)/Formula/hol88-gcl.rb"
 
       - name: Build AXIOM
         if: github.ref_name == 'axiom'
