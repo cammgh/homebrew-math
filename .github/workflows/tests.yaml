@@ -78,6 +78,7 @@ jobs:
           BOTTLE_SHA=$(shasum -a 256 $BOTTLE_FILE | awk '{print $1}')
           cp $BOTTLE_FILE $TAP_DIR/$(echo $BOTTLE_FILE | sed 's,--,-,1')
           cp Formula/* $TAP_DIR/Formula/
+          sed -i '' 's@depends_on "cammgh/math/gcl27"@depends_on "local/math/gcl27"@g' "$TAP_DIR/Formula/hol88-gcl.rb"
           cd $TAP_DIR
           cp Formula/gcl27.rb Formula/gcl27.rb.old
           sed -i '' "s@root_url .*@root_url \"file://$TAP_DIR\"@g" Formula/gcl27.rb
