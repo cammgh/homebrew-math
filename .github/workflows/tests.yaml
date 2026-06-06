@@ -83,10 +83,10 @@ jobs:
           sed -i '' "s/# sha256 cellar.*/sha256 cellar: :any, $BOTTLE_ARCH: \"${BOTTLE_SHA}\"/g" Formula/gcl27.rb
           brew untap cammgh/math || true
           brew install --formula ./Formula/gcl27.rb
-          brew tap-new cammgh/math
-          NEW_TAP_PATH=$(brew --repository cammgh/math)
-          rm -rf "$NEW_TAP_PATH/Formula" "$NEW_TAP_PATH/HomebrewFormula"
-          ln -s "$RUNNER_WORKSPACE/Formula" "$NEW_TAP_PATH/Formula"
+          #brew tap-new cammgh/math
+          #NEW_TAP_PATH=$(brew --repository cammgh/math)
+          #rm -rf "$NEW_TAP_PATH/Formula" "$NEW_TAP_PATH/HomebrewFormula"
+          #ln -s "$RUNNER_WORKSPACE/Formula" "$NEW_TAP_PATH/Formula"
 
       - name: Build Maxima
         if: github.ref_name == 'maxima'
@@ -129,9 +129,9 @@ jobs:
       - name: Build HOL88
         if: github.ref_name == 'hol88'
         run: |
-          brew audit --formula "cammgh/math/hol88-gcl" --online || echo "Audit failure, continuing"
-          brew install --formula --verbose --build-from-source "cammgh/math/hol88-gcl"
-          brew test "cammgh/math/hol88-gcl"
+          brew audit --formula "$(pwd)/Formula/hol88-gcl" --online || echo "Audit failure, continuing"
+          brew install --formula --verbose --build-from-source "$(pwd)/Formula/hol88-gcl"
+          brew test "$(pwd)/Formula/hol88-gcl"
 
       - name: Build AXIOM
         if: github.ref_name == 'axiom'
