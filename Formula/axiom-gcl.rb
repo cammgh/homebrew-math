@@ -45,6 +45,7 @@ class AxiomGcl < Formula
       end
     end
 
+    ENV.deparallelize
     ENV.append "CFLAGS","-DSIGCLD=SIGCHLD -I#{buildpath}/include"
     ENV.append "CPPFLAGS","-DSIGCLD=SIGCHLD -I#{buildpath}/include"
     ENV.append "C_INCLUDE_PATH","#{buildpath}/include"
