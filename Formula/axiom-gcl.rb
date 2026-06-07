@@ -53,7 +53,7 @@ class AxiomGcl < Formula
     ENV.prepend_path "PATH", Formula["findutils"].opt_libexec/"gnubin"
     ENV.prepend_path "PATH", buildpath/"bin"
     
-    #system "false"
+    system "false"
     system <<~SHELL
            mkdir bin include
            echo "#include <stdlib.h>" >include/malloc.h
