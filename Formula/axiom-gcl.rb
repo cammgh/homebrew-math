@@ -72,8 +72,8 @@ class AxiomGcl < Formula
            gmake -f debian/rules -O build
            cp mnt/linux/bin/axiom int/sman
            AXIOM=$(pwd)/mnt/linux make install DESTDIR="#{prefix}"
-           mkdir #{prefix}/bin || true
-           cp #{prefix}/mnt/linux/bin/axiom #{prefix}/bin
+           #mkdir #{prefix}/bin || true
+           #cp #{prefix}/mnt/linux/bin/axiom #{prefix}/bin
            #gmake -f debian/rules install
            #for i in debian/bin/axiom debian/bin/axiom-test; do
            #    sed 's,/usr/lib/axiom,#{prefix}/lib/axiom,g' $i >$i.new
@@ -89,7 +89,7 @@ class AxiomGcl < Formula
     SHELL
   end
   test do
-    output = shell_output("echo ')quit' | #{prefix}/bin/axiom -noht -noclef")
+    output = shell_output("echo ')quit' | #{prefix}/mnt/linux/bin/axiom -noht -noclef")
     assert_match "Axiom", output
   end
 end
