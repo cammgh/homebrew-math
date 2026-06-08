@@ -45,6 +45,7 @@ class AxiomGcl < Formula
       end
     end
 
+    #ENV.deparallelize
     ENV.append "CFLAGS","-DSIGCLD=SIGCHLD -I#{buildpath}/include"
     ENV.append "CPPFLAGS","-DSIGCLD=SIGCHLD -I#{buildpath}/include"
     ENV.append "C_INCLUDE_PATH","#{buildpath}/include"
@@ -60,25 +61,35 @@ class AxiomGcl < Formula
                ln -s /usr/bin/true bin/dh_$i
            done
            ln -s $(which gcl) bin/gcl27
-           gmake -f debian/rules configure
-           gmake -f debian/rules build
-           gmake -f debian/rules install
-           for i in debian/bin/axiom debian/bin/axiom-test; do
-               sed 's,/usr/lib/axiom,#{prefix}/lib/axiom,g' $i >$i.new
-               chmod +x $i.new
-               mv $i.new $i
-           done
-           for i in debian/*.install; do
-               awk '{gsub("usr/","",$2);printf("mkdir -p #{prefix}/%s && cp -r %s #{prefix}/%s\\n",$2,$1,$2)}' $i | bash -x
-           done
-           for i in debian/*.links; do
-               awk '{gsub("usr/","",$0);printf("ln -snf #{prefix}/%s #{prefix}/%s\\n",$1,$2)}' $i | bash -x
-           done
+           sed -i '' 's/mem_value(x ,i)object x;int i;/mem_value(object x,int i)/g' src/interp/vmlisp.lisp.pamphlet
+           sed -i '' 's/MYHASH(s)/MYHASH(char *s)/g' src/interp/cfuns.lisp.pamphlet
+           sed -i '' 's/"char \\*s;\"//g' src/interp/cfuns.lisp.pamphlet
+           sed -i '' 's/MYCOMBINE(i,j)/MYCOMBINE(int i,int j)/g' src/interp/cfuns.lisp.pamphlet
+           sed -i '' 's/"int i,j;\"//g' src/interp/cfuns.lisp.pamphlet
+           sed -i '' 's/"unsigned int i,j;\"//g' src/interp/cfuns.lisp.pamphlet
+           sed -i '' '/^$/d' src/interp/cfuns.lisp.pamphlet
+           gmake -f debian/rules -O configure
+           gmake -f debian/rules -O build
+           cp mnt/linux/bin/axiom int/sman
+           AXIOM=$(pwd)/mnt/linux make install DESTDIR="#{prefix}"
+           #mkdir #{prefix}/bin || true
+           #cp #{prefix}/mnt/linux/bin/axiom #{prefix}/bin
+           #gmake -f debian/rules install
+           #for i in debian/bin/axiom debian/bin/axiom-test; do
+           #    sed 's,/usr/lib/axiom,#{prefix}/lib/axiom,g' $i >$i.new
+           #    chmod +x $i.new
+           #    mv $i.new $i
+           #done
+           #for i in debian/*.install; do
+           #    awk '{gsub("usr/","",$2);printf("mkdir -p #{prefix}/%s && cp -r %s #{prefix}/%s\\n",$2,$1,$2)}' $i | bash -x
+           #done
+           #for i in debian/*.links; do
+           #    awk '{gsub("usr/","",$0);printf("ln -snf #{prefix}/%s #{prefix}/%s\\n",$1,$2)}' $i | bash -x
+           #done
     SHELL
-    #system "make","TESTSET=regresstests","GCL=/opt/homebrew/bin/gcl"
   end
   test do
-    output = shell_output("echo ')quit' | #{bin}/axiom -noht -noclef")
+    output = shell_output("echo ')quit' | #{prefix}/mnt/linux/bin/axiom -noht -noclef")
     assert_match "Axiom", output
   end
 end

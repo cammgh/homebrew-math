@@ -16,6 +16,7 @@ class FricasGcl < Formula
   end
 
   def install
+    #ENV.deparallelize
     ENV["GCL_MULTIPROCESS_MEMORY_POOL"] = buildpath
 
     (buildpath/"debian").mkdir
@@ -38,10 +39,9 @@ class FricasGcl < Formula
       end
     end
 
-    gcl_bin = "/opt/homebrew/bin/gcl"
     configure_args = %W[
       --prefix=#{prefix}
-      --with-lisp=#{gcl_bin}
+      --with-lisp=gcl
     ]
 
     system "./configure", *configure_args
