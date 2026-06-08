@@ -51,6 +51,7 @@ class MaximaGcl < Formula
       --with-gcl=gcl
     ]
 
+    system "false"
     system "./configure", *configure_args
     system "autoreconf","-ivf"
     system "make"
