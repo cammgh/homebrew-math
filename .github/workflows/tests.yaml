@@ -73,27 +73,20 @@ jobs:
           [ "$BOTTLE_FILE" != "" ] || false
           BOTTLE_ARCH=$(echo "$BOTTLE_FILE" | grep -oE '(arm64_tahoe|tahoe)\.bottle' | cut -d'.' -f1)
           brew tap-new local/math
+          brew trust local/math
           TAP_DIR=$(brew --repository local/math)
           SRC_TAP_DIR=$(brew --repository cammgh/math 2>/dev/null || echo "")
           cp ./Formula/gcl27.rb "$TAP_DIR/Formula/gcl27.rb"
           BOTTLE_SHA=$(shasum -a 256 $BOTTLE_FILE | awk '{print $1}')
           cp $BOTTLE_FILE $TAP_DIR/$(echo $BOTTLE_FILE | sed 's,--,-,1')
-          #cp Formula/* $TAP_DIR/Formula/
-          #sed -i '' 's@depends_on "cammgh/math/gcl27"@depends_on "local/math/gcl27"@g' "$TAP_DIR/Formula/hol88-gcl.rb"
           cd $TAP_DIR
-          #cp Formula/gcl27.rb Formula/gcl27.rb.old
           sed -i '' "s@root_url .*@root_url \"file://$TAP_DIR\"@g" Formula/gcl27.rb
           sed -i '' "s/# sha256 cellar.*/sha256 cellar: :any, $BOTTLE_ARCH: \"${BOTTLE_SHA}\"/g" Formula/gcl27.rb
-          #brew untap cammgh/math || true
           if [ -d "$SRC_TAP_DIR/Formula" ]; then mv "$SRC_TAP_DIR/Formula" "$SRC_TAP_DIR/Formula.bak"; fi
           if [ -d "$SRC_TAP_DIR/HomebrewFormula" ]; then mv "$SRC_TAP_DIR/HomebrewFormula" "$SRC_TAP_DIR/HomebrewFormula.bak"; fi
           brew install --formula "$TAP_DIR/Formula/gcl27.rb"
           if [ -d "$SRC_TAP_DIR/Formula.bak" ]; then mv "$SRC_TAP_DIR/Formula.bak" "$SRC_TAP_DIR/Formula"; fi
           if [ -d "$SRC_TAP_DIR/HomebrewFormula.bak" ]; then mv "$SRC_TAP_DIR/HomebrewFormula.bak" "$SRC_TAP_DIR/HomebrewFormula"; fi
-          #brew tap-new cammgh/math
-          #NEW_TAP_PATH=$(brew --repository cammgh/math)
-          #rm -rf "$NEW_TAP_PATH/Formula" "$NEW_TAP_PATH/HomebrewFormula"
-          #ln -s "$RUNNER_WORKSPACE/Formula" "$NEW_TAP_PATH/Formula"
 
       - name: Build Maxima
         if: github.ref_name == 'maxima'
@@ -190,20 +183,26 @@ jobs:
         continue-on-error: true # Falls back to source if no artifact exists yet
 
       - name: Install Local GCL27 Binary
+        if: github.ref_name != 'main'
         run: |
           BOTTLE_FILE=$(ls -1 gcl27*z | head -n 1)
           [ "$BOTTLE_FILE" != "" ] || false
           BOTTLE_ARCH=$(echo "$BOTTLE_FILE" | grep -oE '(arm64_tahoe|tahoe)\.bottle' | cut -d'.' -f1)
           brew tap-new local/math
+          brew trust local/math
           TAP_DIR=$(brew --repository local/math)
+          SRC_TAP_DIR=$(brew --repository cammgh/math 2>/dev/null || echo "")
           cp ./Formula/gcl27.rb "$TAP_DIR/Formula/gcl27.rb"
           BOTTLE_SHA=$(shasum -a 256 $BOTTLE_FILE | awk '{print $1}')
           cp $BOTTLE_FILE $TAP_DIR/$(echo $BOTTLE_FILE | sed 's,--,-,1')
           cd $TAP_DIR
-          cp Formula/gcl27.rb Formula/gcl27.rb.old
-          sed -i '' "s@root_url .*@root_url \"file://${TAP_DIR}\"@g" Formula/gcl27.rb
+          sed -i '' "s@root_url .*@root_url \"file://$TAP_DIR\"@g" Formula/gcl27.rb
           sed -i '' "s/# sha256 cellar.*/sha256 cellar: :any, $BOTTLE_ARCH: \"${BOTTLE_SHA}\"/g" Formula/gcl27.rb
-          brew install --formula local/math/gcl27
+          if [ -d "$SRC_TAP_DIR/Formula" ]; then mv "$SRC_TAP_DIR/Formula" "$SRC_TAP_DIR/Formula.bak"; fi
+          if [ -d "$SRC_TAP_DIR/HomebrewFormula" ]; then mv "$SRC_TAP_DIR/HomebrewFormula" "$SRC_TAP_DIR/HomebrewFormula.bak"; fi
+          brew install --formula "$TAP_DIR/Formula/gcl27.rb"
+          if [ -d "$SRC_TAP_DIR/Formula.bak" ]; then mv "$SRC_TAP_DIR/Formula.bak" "$SRC_TAP_DIR/Formula"; fi
+          if [ -d "$SRC_TAP_DIR/HomebrewFormula.bak" ]; then mv "$SRC_TAP_DIR/HomebrewFormula.bak" "$SRC_TAP_DIR/HomebrewFormula"; fi
 
       - name: Download Core State Artifact
         uses: actions/download-artifact@v4
@@ -268,20 +267,26 @@ jobs:
         continue-on-error: true # Falls back to source if no artifact exists yet
 
       - name: Install Local GCL27 Binary
+        if: github.ref_name != 'main'
         run: |
           BOTTLE_FILE=$(ls -1 gcl27*z | head -n 1)
           [ "$BOTTLE_FILE" != "" ] || false
           BOTTLE_ARCH=$(echo "$BOTTLE_FILE" | grep -oE '(arm64_tahoe|tahoe)\.bottle' | cut -d'.' -f1)
           brew tap-new local/math
+          brew trust local/math
           TAP_DIR=$(brew --repository local/math)
+          SRC_TAP_DIR=$(brew --repository cammgh/math 2>/dev/null || echo "")
           cp ./Formula/gcl27.rb "$TAP_DIR/Formula/gcl27.rb"
           BOTTLE_SHA=$(shasum -a 256 $BOTTLE_FILE | awk '{print $1}')
           cp $BOTTLE_FILE $TAP_DIR/$(echo $BOTTLE_FILE | sed 's,--,-,1')
           cd $TAP_DIR
-          cp Formula/gcl27.rb Formula/gcl27.rb.old
-          sed -i '' "s@root_url .*@root_url \"file://${TAP_DIR}\"@g" Formula/gcl27.rb
+          sed -i '' "s@root_url .*@root_url \"file://$TAP_DIR\"@g" Formula/gcl27.rb
           sed -i '' "s/# sha256 cellar.*/sha256 cellar: :any, $BOTTLE_ARCH: \"${BOTTLE_SHA}\"/g" Formula/gcl27.rb
-          brew install --formula local/math/gcl27
+          if [ -d "$SRC_TAP_DIR/Formula" ]; then mv "$SRC_TAP_DIR/Formula" "$SRC_TAP_DIR/Formula.bak"; fi
+          if [ -d "$SRC_TAP_DIR/HomebrewFormula" ]; then mv "$SRC_TAP_DIR/HomebrewFormula" "$SRC_TAP_DIR/HomebrewFormula.bak"; fi
+          brew install --formula "$TAP_DIR/Formula/gcl27.rb"
+          if [ -d "$SRC_TAP_DIR/Formula.bak" ]; then mv "$SRC_TAP_DIR/Formula.bak" "$SRC_TAP_DIR/Formula"; fi
+          if [ -d "$SRC_TAP_DIR/HomebrewFormula.bak" ]; then mv "$SRC_TAP_DIR/HomebrewFormula.bak" "$SRC_TAP_DIR/HomebrewFormula"; fi
 
       - name: Download Core State Artifact
         uses: actions/download-artifact@v4
@@ -346,20 +351,26 @@ jobs:
         continue-on-error: true # Falls back to source if no artifact exists yet
 
       - name: Install Local GCL27 Binary
+        if: github.ref_name != 'main'
         run: |
           BOTTLE_FILE=$(ls -1 gcl27*z | head -n 1)
           [ "$BOTTLE_FILE" != "" ] || false
           BOTTLE_ARCH=$(echo "$BOTTLE_FILE" | grep -oE '(arm64_tahoe|tahoe)\.bottle' | cut -d'.' -f1)
           brew tap-new local/math
+          brew trust local/math
           TAP_DIR=$(brew --repository local/math)
+          SRC_TAP_DIR=$(brew --repository cammgh/math 2>/dev/null || echo "")
           cp ./Formula/gcl27.rb "$TAP_DIR/Formula/gcl27.rb"
           BOTTLE_SHA=$(shasum -a 256 $BOTTLE_FILE | awk '{print $1}')
           cp $BOTTLE_FILE $TAP_DIR/$(echo $BOTTLE_FILE | sed 's,--,-,1')
           cd $TAP_DIR
-          cp Formula/gcl27.rb Formula/gcl27.rb.old
-          sed -i '' "s@root_url .*@root_url \"file://${TAP_DIR}\"@g" Formula/gcl27.rb
+          sed -i '' "s@root_url .*@root_url \"file://$TAP_DIR\"@g" Formula/gcl27.rb
           sed -i '' "s/# sha256 cellar.*/sha256 cellar: :any, $BOTTLE_ARCH: \"${BOTTLE_SHA}\"/g" Formula/gcl27.rb
-          brew install --formula local/math/gcl27
+          if [ -d "$SRC_TAP_DIR/Formula" ]; then mv "$SRC_TAP_DIR/Formula" "$SRC_TAP_DIR/Formula.bak"; fi
+          if [ -d "$SRC_TAP_DIR/HomebrewFormula" ]; then mv "$SRC_TAP_DIR/HomebrewFormula" "$SRC_TAP_DIR/HomebrewFormula.bak"; fi
+          brew install --formula "$TAP_DIR/Formula/gcl27.rb"
+          if [ -d "$SRC_TAP_DIR/Formula.bak" ]; then mv "$SRC_TAP_DIR/Formula.bak" "$SRC_TAP_DIR/Formula"; fi
+          if [ -d "$SRC_TAP_DIR/HomebrewFormula.bak" ]; then mv "$SRC_TAP_DIR/HomebrewFormula.bak" "$SRC_TAP_DIR/HomebrewFormula"; fi
 
       - name: Download Core State Artifact
         uses: actions/download-artifact@v4
@@ -425,20 +436,26 @@ jobs:
         continue-on-error: true # Falls back to source if no artifact exists yet
 
       - name: Install Local GCL27 Binary
+        if: github.ref_name != 'main'
         run: |
           BOTTLE_FILE=$(ls -1 gcl27*z | head -n 1)
           [ "$BOTTLE_FILE" != "" ] || false
           BOTTLE_ARCH=$(echo "$BOTTLE_FILE" | grep -oE '(arm64_tahoe|tahoe)\.bottle' | cut -d'.' -f1)
           brew tap-new local/math
+          brew trust local/math
           TAP_DIR=$(brew --repository local/math)
+          SRC_TAP_DIR=$(brew --repository cammgh/math 2>/dev/null || echo "")
           cp ./Formula/gcl27.rb "$TAP_DIR/Formula/gcl27.rb"
           BOTTLE_SHA=$(shasum -a 256 $BOTTLE_FILE | awk '{print $1}')
           cp $BOTTLE_FILE $TAP_DIR/$(echo $BOTTLE_FILE | sed 's,--,-,1')
           cd $TAP_DIR
-          cp Formula/gcl27.rb Formula/gcl27.rb.old
-          sed -i '' "s@root_url .*@root_url \"file://${TAP_DIR}\"@g" Formula/gcl27.rb
+          sed -i '' "s@root_url .*@root_url \"file://$TAP_DIR\"@g" Formula/gcl27.rb
           sed -i '' "s/# sha256 cellar.*/sha256 cellar: :any, $BOTTLE_ARCH: \"${BOTTLE_SHA}\"/g" Formula/gcl27.rb
-          brew install --formula local/math/gcl27
+          if [ -d "$SRC_TAP_DIR/Formula" ]; then mv "$SRC_TAP_DIR/Formula" "$SRC_TAP_DIR/Formula.bak"; fi
+          if [ -d "$SRC_TAP_DIR/HomebrewFormula" ]; then mv "$SRC_TAP_DIR/HomebrewFormula" "$SRC_TAP_DIR/HomebrewFormula.bak"; fi
+          brew install --formula "$TAP_DIR/Formula/gcl27.rb"
+          if [ -d "$SRC_TAP_DIR/Formula.bak" ]; then mv "$SRC_TAP_DIR/Formula.bak" "$SRC_TAP_DIR/Formula"; fi
+          if [ -d "$SRC_TAP_DIR/HomebrewFormula.bak" ]; then mv "$SRC_TAP_DIR/HomebrewFormula.bak" "$SRC_TAP_DIR/HomebrewFormula"; fi
 
       - name: Download Final Books Artifacts
         uses: actions/download-artifact@v4
