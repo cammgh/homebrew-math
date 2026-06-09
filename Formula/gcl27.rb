@@ -2,9 +2,9 @@ class Gcl27 < Formula
   desc "GNU Common Lisp"
   homepage "https://gnu.org/software/gcl"
   url "git://git.sv.gnu.org/gcl.git",
-      tag:      "Version_2_7_2pre_homebrew18", # Replace with your target version tag
-      revision: "8672325dcf5690c417e83cfd88f3ba3924744656" # Replace with the exact Git commit hash
-  version "2.7.2prehb18"
+      tag:      "Version_2_7_2pre_homebrew19", # Replace with your target version tag
+      revision: "16c4d8b29f0847446457da61ee00cf9ddfa0cd81" # Replace with the exact Git commit hash
+  version "2.7.2prehb19"
   license "GPL-2.0-or-later"
 
   bottle do
@@ -21,6 +21,7 @@ class Gcl27 < Formula
   depends_on "xorgproto"
 
   depends_on "make" => :build
+  depends_on "texinfo" => :build
 
   def install
     system <<~SHELL
