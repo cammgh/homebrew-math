@@ -21,6 +21,7 @@ class MaximaGcl < Formula
     sha256 "8261d8d916b6168acba394b0f74df5ee51316a75d1a57463d324f41a398db2f5"
   end
 
+  patch :DATA
 
   def install
     ENV.deparallelize
@@ -61,3 +62,36 @@ class MaximaGcl < Formula
     assert_match "2", shell_output("#{bin}/maxima --batch-string='1+1;'")
   end
 end
+
+__END__
+--- a/src/defint.lisp
++++ b/src/defint1.lisp
+@@ -1358,10 +1358,10 @@
+
+
+ (defun evenfn (e ivar)
+-  (let ((temp (m+ (m- e)
+-		  (cond ((atom ivar)
+-			 ($substitute (m- ivar) ivar e))
+-			(t ($ratsubst (m- ivar) ivar e))))))
++  (let* ((a (atom ivar))
++        (s (when a ($substitute (m- ivar) ivar e)))
++        (r (unless a ($ratsubst (m- ivar) ivar e)))
++        (temp (m+ (m- e) (if a s r))))
+     (cond ((zerop1 temp)
+           t)
+          ((zerop1 (sratsimp temp))
+@@ -1369,9 +1369,10 @@
+          (t nil))))
+
+ (defun oddfn (e ivar)
+-  (let ((temp (m+ e (cond ((atom ivar)
+-			   ($substitute (m- ivar) ivar e))
+-			  (t ($ratsubst (m- ivar) ivar e))))))
++  (let* ((a (atom ivar))
++        (s (when a ($substitute (m- ivar) ivar e)))
++        (r (unless a ($ratsubst (m- ivar) ivar e)))
++        (temp (m+ e (if a s r))))
+     (cond ((zerop1 temp)
+           t)
+          ((zerop1 (sratsimp temp))
