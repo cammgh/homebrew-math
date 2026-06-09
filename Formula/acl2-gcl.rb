@@ -50,7 +50,7 @@ class Acl2Gcl < Formula
         end
       end
 
-      system "false"
+      #system "false"
       system <<~SHELL
            for i in testdir testroot prep installdirs; do
                ln -s /usr/bin/true bin/dh_$i
