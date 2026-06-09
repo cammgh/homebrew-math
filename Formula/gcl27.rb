@@ -24,6 +24,7 @@ class Gcl27 < Formula
   depends_on "texinfo" => :build
 
   def install
+    system "false"
     system <<~SHELL
            ./git_touch
            ./configure --prefix=#{prefix} --with-lispdir=#{elisp}
