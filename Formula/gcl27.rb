@@ -1,59 +1,40 @@
 class Gcl27 < Formula
   desc "GNU Common Lisp"
   homepage "https://gnu.org/software/gcl"
-  # Pull directly from the upstream GNU Savannah repository
   url "git://git.sv.gnu.org/gcl.git",
-      tag:      "Version_2_7_2pre_homebrew15", # Replace with your target version tag
-      revision: "03e1c98051f82dcdc72078cbd83ac86621d2d9e5" # Replace with the exact Git commit hash
-  version "2.7.2prehb15"
+      tag:      "Version_2_7_2pre_homebrew21", # Replace with your target version tag
+      revision: "5df56f3ba0ce0a3aa18842b5e46d5c20431fe0a4" # Replace with the exact Git commit hash
+  version "2.7.2prehb21"
   license "GPL-2.0-or-later"
 
-
-  # --- This block unlocks native binary bottling and path relocations ---
   bottle do
     root_url "https://localhost"
     # sha256 cellar: :any, arm64_sequoia: "all"
     # The sha256 lines for arm64_sequoia or x86_64 will be injected dynamically by CI
   end
 
-  # Core dependencies needed to compile GCL on macOS
+  #depends_on "gcc"
   depends_on "gmp"
-
-
-  # --- Full X11 Stack Dependency Declarations ---
-  # Listing the complete sub-library array resolves the 'indirect linkage' audit failure
   depends_on "libx11"
   depends_on "libxext"
   depends_on "readline"
   depends_on "xorgproto"
 
+  depends_on "make" => :build
+  depends_on "texinfo" => :build
+
   def install
-    # 1. Establish the local, writable lockfile pool inside the temporary build sandbox
-    ENV["GCL_MULTIPROCESS_MEMORY_POOL"] = buildpath
-
-    # Fix Git timestamp synchronization issues to preserve tracked configure scripts
-    system "./git_touch" if File.exist?("git_touch")
-
-    # Ensure compiler knows exactly where Homebrew handles GMP and Readline
-    configure_args = %W[
-      --prefix=#{prefix}
-      --enable-gmp=#{Formula["gmp"].opt_prefix}
-      --with-lispdir=#{elisp}
-    ]
-
-    # Equivalent to Debian's dh_auto_configure, passing our array of variables
-    system "./configure", *configure_args
-
-    # Build and install into Homebrew's temporary sandbox path
-    system "make"
-    system "make", "sb_ansi-tests/test_results"
-    system "make", "sb_bench/timing_results"
-    system "make", "install"
+    system <<~SHELL
+           ./git_touch
+           ./configure --prefix=#{prefix} --with-lispdir=#{elisp}
+           GCL_MULTIPROCESS_MEMORY_POOL=$(pwd) gmake -O
+           gmake sb_ansi-tests/test_results
+           gmake sb_bench/timing_results
+           gmake install
+    SHELL
   end
 
-  # The 'autopkgtest' equivalent to verify the build functions post-install
   test do
-    # Verify that calling gcl launches cleanly and executes standard Lisp evaluations
     assert_match "GCL", shell_output("#{bin}/gcl -batch -eval '(format t \"~a\" \"GCL\")'")
   end
 end
