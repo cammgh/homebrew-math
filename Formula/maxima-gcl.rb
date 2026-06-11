@@ -46,17 +46,16 @@ class MaximaGcl < Formula
       end
     end
 
-    configure_args = %W[
-      --prefix=#{prefix}
-      --enable-gcl
-      --with-gcl=gcl
-    ]
-
-    system "false"
-    system "./configure", *configure_args
+    #system "false"
     system "autoreconf","-ivf"
-    system "make"
-    system "make", "install"
+    system <<~SHELL
+           mkdir bin || true
+           echo "(progn (setq si::*optimize-maximum-pages* nil)(when (fboundp (quote si::sgc-on)) (fmakunbound (quote si::sgc-on)))(si::save-system \\"bin/gcl\\"))" | gcl
+           ./configure --prefix=#{prefix} --enable-gcl --with-gcl=\\$(pwd)/bin/gcl
+           make
+           echo ":lisp (setq maxima::*maxima-started* nil si::*optimize-maximum-pages* t si::*readline-prefix* \\"MAXIMA::\\$\\$\\" si::*allow-gzipped-file* t)(si::gbc t)(si::save-system \\"foo\\")" | ./maxima-local && mv foo src/binary-gcl/maxima
+           make install
+    SHELL
   end
     test do
     assert_match "2", shell_output("#{bin}/maxima --batch-string='1+1;'")
