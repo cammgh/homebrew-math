@@ -11,9 +11,6 @@ on:
       - hol88
   pull_request:
 
-env:
-  HOMEBREW_NO_SANDBOX: "1"
-
 jobs:
   build:
     strategy:
