@@ -35,7 +35,7 @@ jobs:
       # --- LAYER 1: MAIN BRANCH LOGIC (COMPILE & EXPORT GCL27) ---
       - name: Build and Store Core GCL27
         if: github.ref_name == 'main'
-	env:
+        env:
           HOMEBREW_NO_SANDBOX: "1"
         run: |
           brew audit --formula "cammgh/math/gcl27" --online || echo "Audit failure, continuing"
