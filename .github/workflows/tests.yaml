@@ -37,7 +37,7 @@ jobs:
         if: github.ref_name == 'main'
         env:
           HOMEBREW_NO_SANDBOX: "1"
-          SWIFT_BUILD_FLAGS: "--disable-sandbox"
+          HOMEBREW_NOT_SANDBOXED: "1" # Forces Homebrew's inner compiler to ignore the sandbox
         run: |
           brew audit --formula "cammgh/math/gcl27" --online || echo "Audit failure, continuing"
           brew install --formula --verbose --build-bottle "cammgh/math/gcl27"
