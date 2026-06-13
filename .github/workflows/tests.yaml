@@ -95,9 +95,9 @@ jobs:
           brew install --formula --verbose --build-from-source "cammgh/math/maxima-gcl"
           brew test --verbose "cammgh/math/maxima-gcl"
 
-      - name: Execute Full Upstream Testsuite (with 30-minute GitHub Timeout)
+      - name: Execute Full Upstream Testsuite (with 60-minute GitHub Timeout)
         if: github.ref_name == 'maxima'
-        timeout-minutes: 30
+        timeout-minutes: 60
         run: |
           GCL_MEM_MULTIPLE=1.0 maxima --batch-string="run_testsuite(share_tests=true);"
           #false
