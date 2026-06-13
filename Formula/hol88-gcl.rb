@@ -21,7 +21,7 @@ class Hol88Gcl < Formula
 
   resource "debian-patches" do
     url "https://deb.debian.org/debian/pool/main/h/hol88/hol88_2.02.19940316dfsg-9.debian.tar.xz"
-    sha256 "b37fdbfd5f95042ac1bb62fdfb49120c0eecbe59e90a99fb25fa24b241f6c49d"
+    sha256 "8016a7c2b904406f45a58bcafe301996ef56587cf7c94f83694223c4c021c389"
   end
 
   def install
