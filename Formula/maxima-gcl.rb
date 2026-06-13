@@ -53,7 +53,7 @@ class MaximaGcl < Formula
            echo "(progn (setq si::*optimize-maximum-pages* nil)(when (fboundp (quote si::sgc-on)) (fmakunbound (quote si::sgc-on)))(si::save-system \\"bin/gcl\\"))" | gcl
            ./configure --prefix=#{prefix} --enable-gcl --with-gcl=$(pwd)/bin/gcl
            make
-           echo ":lisp (setq maxima::*maxima-started* nil si::*optimize-maximum-pages* t si::*readline-prefix* \\"MAXIMA::\$\$\\" si::*allow-gzipped-file* t)(si::gbc t)(si::save-system \\"foo\\")" | ./maxima-local && mv foo src/binary-gcl/maxima
+           echo ":lisp (setq maxima::*maxima-started* nil si::*optimize-maximum-pages* t maxima::*maxima-index-dir* \\"#{prefix}/share/info/\\" si::*readline-prefix* \\"MAXIMA::\$\$\\" si::*allow-gzipped-file* t)(si::gbc t)(si::save-system \\"foo\\")" | ./maxima-local && mv foo src/binary-gcl/maxima
            make install
     SHELL
   end
