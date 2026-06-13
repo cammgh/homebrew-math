@@ -3,7 +3,7 @@ class Hol88Gcl < Formula
   homepage "https://sourceforge.io"
 
   url "https://deb.debian.org/debian/pool/main/h/hol88/hol88_2.02.19940316dfsg.orig.tar.gz"
-  version "2.02.19940316dfsg-8"
+  version "2.02.19940316dfsg-9"
   sha256 "8e2a4f83cea20d0cf2416f7d55c951498f6c807b03ebc9381a02fa4c81c5da69"
 
   #conflicts_with "hol88", because: "both install a 'hol88' executable"
@@ -20,7 +20,7 @@ class Hol88Gcl < Formula
   #depends_on "gawk" => :build
 
   resource "debian-patches" do
-    url "https://deb.debian.org/debian/pool/main/h/hol88/hol88_2.02.19940316dfsg-8.debian.tar.xz"
+    url "https://deb.debian.org/debian/pool/main/h/hol88/hol88_2.02.19940316dfsg-9.debian.tar.xz"
     sha256 "b37fdbfd5f95042ac1bb62fdfb49120c0eecbe59e90a99fb25fa24b241f6c49d"
   end
 
