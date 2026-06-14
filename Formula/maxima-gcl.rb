@@ -94,8 +94,8 @@ __END__
      (cond ((zerop1 temp)
            t)
           ((zerop1 (sratsimp temp))
---- ./doc/info/build_index.pl1  2026-06-14 12:54:18
-+++ ./doc/info/build_index.pl   2026-06-14 12:54:56
+--- a/doc/info/build_index.pl  2026-06-14 12:54:18
++++ b/doc/info/build_index.pl1   2026-06-14 12:54:56
 @@ -252,7 +252,7 @@
 
  #        Construct hashtables from the lists given above.
