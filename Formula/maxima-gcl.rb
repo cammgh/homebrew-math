@@ -103,6 +103,6 @@ __END__
 -print "(load-info-hashtables (maxima::maxima-load-pathname-directory) deffn-defvr-pairs section-pairs))\n";
 +print "(clrhash cl-info::*info-tables*)(load-info-hashtables (maxima::maxima-load-pathname-directory) deffn-defvr-pa\
 irs section-pairs))\n";
-
+ 
  # (2.3)  Do we have any items or sections?
  #
