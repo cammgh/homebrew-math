@@ -16,7 +16,7 @@ permissions:
 
 jobs:
   core:
-  if: github.ref_name == 'acl2'
+    if: github.ref_name == 'acl2'
     strategy:
       matrix:
         include:
