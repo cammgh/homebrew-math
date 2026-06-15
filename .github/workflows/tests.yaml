@@ -278,7 +278,7 @@ jobs:
 
       - name: Merge Bottle Hashes and Update Repository
         run: |
-          brew bottle --merge ${{ steps.get_version.outputs.fn }}*.bottle.json
+          brew bottle --merge --write ${{ steps.get_version.outputs.fn }}*.bottle.json
 
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
