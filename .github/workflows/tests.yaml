@@ -261,7 +261,7 @@ jobs:
       - name: Bottle
         run: |
           TAG="${{ steps.get_version.outputs.tag_name }}"
-          brew bottle --root-url="https://github.com/cammgh/homebrew-math/releases/download/${TAG}" "cammgh/math/${{ steps.get_version.outputs.fn }}"
+          brew bottle --json --root-url="https://github.com/cammgh/homebrew-math/releases/download/${TAG}" "cammgh/math/${{ steps.get_version.outputs.fn }}"
 
       - name: Deploy Bottles to GitHub Releases
         uses: softprops/action-gh-release@v2
@@ -272,13 +272,13 @@ jobs:
           draft: false
           prerelease: false
           files: |
-            ${{ steps.get_version.outputs.fn }}-*.bottle.tar.gz
+            ${{ steps.get_version.outputs.fn }}*.bottle.tar.gz
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Merge Bottle Hashes and Update Repository
         run: |
-          brew bottle --merge ${{ steps.get_version.outputs.fn }}-*.bottle.json
+          brew bottle --merge ${{ steps.get_version.outputs.fn }}*.bottle.json
 
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
