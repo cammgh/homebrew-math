@@ -53,7 +53,7 @@ class Hol88Gcl < Formula
     ENV.prepend_path "PATH", buildpath/"bin"
     ENV.deparallelize
 
-    #system "false"
+    system "false"
     system <<~SHELL
            mkdir bin #include
            #echo "#include <stdlib.h>" >include/malloc.h
