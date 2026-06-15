@@ -25,9 +25,6 @@ class Acl2Gcl < Formula
     ENV.prepend_path "PATH", Formula["findutils"].opt_libexec/"gnubin"
     ENV.prepend_path "PATH", Formula["coreutils"].opt_libexec/"gnubin"
     ENV.prepend_path "PATH", buildpath/"bin"
-    #ENV["PF1"]="add-ons proof-builder finite-set-theory cowles defsort doc meta bdd parsers tau hints powerlists unicode ihs build arithmetic hacking intel ordinals sorting oslib proofstyles arithmetic-2 data-structures textbook nonstd arithmetic-3 xdoc defexec clause-processors make-event arithmetic-5 acl2s tools demos misc system coi models std rtl workshops centaur projects "
-    #ENV["PF2"]="add-ons proof-builder finite-set-theory cowles defsort doc meta bdd parsers tau hints powerlists unicode ihs build arithmetic hacking intel ordinals sorting oslib proofstyles arithmetic-2 data-structures textbook nonstd arithmetic-3 xdoc defexec clause-processors make-event arithmetic-5 acl2s tools demos misc system coi models std rtl workshops kestrel "
-    #ENV["PF3"]="centaur projects kestrel "
 
     if ENV["HOMEBREW_ACL2_BUILD"] == "core"
       (buildpath/"debian").mkdir
@@ -59,7 +56,8 @@ class Acl2Gcl < Formula
            chmod +x bin/dh_install
            echo "for i in debian/*.links; do awk -v  p=\\${i%.links} '{\\$1=p \\"/\\" \\$1;\\$2=p \\"/\\" \\$2;printf(\\"mkdir -p `dirname %s` && ln -snfr %s %s%c\\",\\$2,\\$1,\\$2,10)}' \\$i |bash -x; done" >bin/dh_link
            chmod +x bin/dh_link
-           ln -s $(which gcl) bin/gcl27
+           echo "#+x86_64(setq compiler::*opt-three* (concatenate (quote string) compiler::*opt-three* \\" -fno-jump-tables \\"))(si::save-system \\"bin/gcl27\\")" | gcl
+           #ln -s $(which gcl) bin/gcl27
            echo "#+(and gcl no-sigfpe)(ignore-errors (si::flush-floating-point-exceptions nil nil (lambda nil nil)))" >>init.lisp
            sed -i '' 's,FINALDIR="/usr/share,FINALDIR="#{prefix}/share,g' debian/rules
            sed -i '' 's,regression-fresh,regression,g' debian/rules
