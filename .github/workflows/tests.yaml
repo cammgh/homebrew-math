@@ -3,7 +3,7 @@ name: Dynamic Tap Validation
 on:
   push:
     branches:
-      - main
+      - gcl27
       - maxima
       - acl2
       - fricas
@@ -11,8 +11,12 @@ on:
       - hol88
   pull_request:
 
+permissions:
+  contents: write
+
 jobs:
-  build:
+  core:
+  if: github.ref_name == 'acl2'
     strategy:
       matrix:
         include:
@@ -32,78 +36,7 @@ jobs:
       - name: Set up Homebrew Framework
         uses: Homebrew/actions/setup-homebrew@main
 
-      # --- LAYER 1: MAIN BRANCH LOGIC (COMPILE & EXPORT GCL27) ---
-      - name: Build and Store Core GCL27
-        if: github.ref_name == 'main'
-        run: |
-          brew audit --formula "cammgh/math/gcl27" --online || echo "Audit failure, continuing"
-          brew install --formula --verbose --build-bottle "cammgh/math/gcl27"
-          brew test "cammgh/math/gcl27"
-
-          # Pack the compiled binary into a portable local Homebrew tarball archive (.bottle)
-          brew bottle --root-url=https://localhost "cammgh/math/gcl27"
-
-      - name: Upload GCL27 Binary Package
-        if: github.ref_name == 'main'
-        uses: actions/upload-artifact@v4
-        with:
-          name: gcl27-binary-${{ matrix.os }}-${{ matrix.arch }}
-          overwrite: true
-          path: |
-            gcl27-*.bottle.tar.gz
-            gcl27-*.bottle.json
-
-      # --- LAYER 2: DERIVATIVE BRANCHES LOGIC (DOWNLOAD GCL27 & COMPILE DERIVATIVES) ---
-      - name: Download Precompiled GCL27 from Main Branch
-        if: github.ref_name != 'main'
-        uses: dawidd6/action-download-artifact@v9
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: main
-          workflow: tests.yaml
-          name: gcl27-binary-${{ matrix.os }}-${{ matrix.arch }}
-          workflow_conclusion: success
-          path: ./
-        continue-on-error: true # Falls back to source if no artifact exists yet
-
-      - name: Install Local GCL27 Binary
-        if: github.ref_name != 'main'
-        run: |
-          BOTTLE_FILE=$(ls -1 gcl27*z | head -n 1)
-          [ "$BOTTLE_FILE" != "" ] || false
-          BOTTLE_ARCH=$(echo "$BOTTLE_FILE" | grep -oE '(arm64_tahoe|tahoe)\.bottle' | cut -d'.' -f1)
-          brew tap-new local/math
-          brew trust local/math
-          TAP_DIR=$(brew --repository local/math)
-          SRC_TAP_DIR=$(brew --repository cammgh/math 2>/dev/null || echo "")
-          cp ./Formula/gcl27.rb "$TAP_DIR/Formula/gcl27.rb"
-          BOTTLE_SHA=$(shasum -a 256 $BOTTLE_FILE | awk '{print $1}')
-          cp $BOTTLE_FILE $TAP_DIR/$(echo $BOTTLE_FILE | sed 's,--,-,1')
-          cd $TAP_DIR
-          sed -i '' "s@root_url .*@root_url \"file://$TAP_DIR\"@g" Formula/gcl27.rb
-          sed -i '' "s/# sha256 cellar.*/sha256 cellar: :any, $BOTTLE_ARCH: \"${BOTTLE_SHA}\"/g" Formula/gcl27.rb
-          if [ -d "$SRC_TAP_DIR/Formula" ]; then mv "$SRC_TAP_DIR/Formula" "$SRC_TAP_DIR/Formula.bak"; fi
-          if [ -d "$SRC_TAP_DIR/HomebrewFormula" ]; then mv "$SRC_TAP_DIR/HomebrewFormula" "$SRC_TAP_DIR/HomebrewFormula.bak"; fi
-          brew install --formula "$TAP_DIR/Formula/gcl27.rb"
-          if [ -d "$SRC_TAP_DIR/Formula.bak" ]; then mv "$SRC_TAP_DIR/Formula.bak" "$SRC_TAP_DIR/Formula"; fi
-          if [ -d "$SRC_TAP_DIR/HomebrewFormula.bak" ]; then mv "$SRC_TAP_DIR/HomebrewFormula.bak" "$SRC_TAP_DIR/HomebrewFormula"; fi
-
-      - name: Build Maxima
-        if: github.ref_name == 'maxima'
-        run: |
-          brew audit --formula "cammgh/math/maxima-gcl" --online || echo "Audit failure, continuing"
-          brew install --formula --verbose --build-from-source "cammgh/math/maxima-gcl"
-          brew test --verbose "cammgh/math/maxima-gcl"
-
-      - name: Execute Full Upstream Testsuite (with 60-minute GitHub Timeout)
-        if: github.ref_name == 'maxima'
-        timeout-minutes: 60
-        run: |
-          GCL_MEM_MULTIPLE=1.0 maxima --batch-string="run_testsuite(share_tests=true);"
-          #false
-
       - name: Build ACL2
-        if: github.ref_name == 'acl2'
         env:
           HOMEBREW_ACL2_BUILD: "core"
           HOMEBREW_ACL2_OCF: "acl2-core-${{ matrix.arch }}.tar.gz"
@@ -113,43 +46,19 @@ jobs:
           find $(brew --prefix) -name "acl2-core-${{ matrix.arch }}.tar.gz" -exec cp {} . \;
 
       - name: Upload Core State Artifact
-        if: github.ref_name == 'acl2'
         uses: actions/upload-artifact@v4
         with:
           name: acl2-core-state-${{ matrix.arch }}
           path: acl2-core-${{ matrix.arch }}.tar.gz
 
-      - name: Build FriCAS
-        if: github.ref_name == 'fricas'
-        run: |
-          brew audit --formula "cammgh/math/fricas-gcl" --online || echo "Audit failure, continuing"
-          brew install --formula --verbose --build-from-source "cammgh/math/fricas-gcl"
-          brew test "cammgh/math/fricas-gcl"
-
-      - name: Build HOL88
-        if: github.ref_name == 'hol88'
-        run: |
-          brew audit --formula "cammgh/math/hol88-gcl" --online || echo "Audit failure, continuing"
-          brew install --formula --verbose --build-from-source "cammgh/math/hol88-gcl"
-          brew test "cammgh/math/hol88-gcl"
-
-      - name: Build AXIOM
-        if: github.ref_name == 'axiom'
-        run: |
-          brew audit --formula "cammgh/math/axiom-gcl" --online || echo "Audit failure, continuing"
-          brew install --formula --verbose --build-from-source "cammgh/math/axiom-gcl"
-          brew test "cammgh/math/axiom-gcl"
-
-      # --- DEB_BUG TRACE ARCHIVE ---
       - name: Open Debug SSH Session on Failure
         if: failure()
         uses: owenthereal/action-upterm@v1
-        with:
-          # Explicitly force a raw bash process instead of tmux
-          upterm-command: /bin/bash --noprofile --norc
+        with: upterm-command: /bin/bash --noprofile --norc
+
 
   books:
-    needs: build
+    needs: core
     if: github.ref_name == 'acl2'
     strategy:
       matrix:
@@ -170,40 +79,6 @@ jobs:
       - name: Set up Homebrew Framework
         uses: Homebrew/actions/setup-homebrew@main
 
-      # --- LAYER 2: DERIVATIVE BRANCHES LOGIC (DOWNLOAD GCL27 & COMPILE DERIVATIVES) ---
-      - name: Download Precompiled GCL27 from Main Branch
-        uses: dawidd6/action-download-artifact@v9
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: main
-          workflow: tests.yaml
-          name: gcl27-binary-${{ matrix.os }}-${{ matrix.arch }}
-          workflow_conclusion: success
-          path: ./
-        continue-on-error: true # Falls back to source if no artifact exists yet
-
-      - name: Install Local GCL27 Binary
-        if: github.ref_name != 'main'
-        run: |
-          BOTTLE_FILE=$(ls -1 gcl27*z | head -n 1)
-          [ "$BOTTLE_FILE" != "" ] || false
-          BOTTLE_ARCH=$(echo "$BOTTLE_FILE" | grep -oE '(arm64_tahoe|tahoe)\.bottle' | cut -d'.' -f1)
-          brew tap-new local/math
-          brew trust local/math
-          TAP_DIR=$(brew --repository local/math)
-          SRC_TAP_DIR=$(brew --repository cammgh/math 2>/dev/null || echo "")
-          cp ./Formula/gcl27.rb "$TAP_DIR/Formula/gcl27.rb"
-          BOTTLE_SHA=$(shasum -a 256 $BOTTLE_FILE | awk '{print $1}')
-          cp $BOTTLE_FILE $TAP_DIR/$(echo $BOTTLE_FILE | sed 's,--,-,1')
-          cd $TAP_DIR
-          sed -i '' "s@root_url .*@root_url \"file://$TAP_DIR\"@g" Formula/gcl27.rb
-          sed -i '' "s/# sha256 cellar.*/sha256 cellar: :any, $BOTTLE_ARCH: \"${BOTTLE_SHA}\"/g" Formula/gcl27.rb
-          if [ -d "$SRC_TAP_DIR/Formula" ]; then mv "$SRC_TAP_DIR/Formula" "$SRC_TAP_DIR/Formula.bak"; fi
-          if [ -d "$SRC_TAP_DIR/HomebrewFormula" ]; then mv "$SRC_TAP_DIR/HomebrewFormula" "$SRC_TAP_DIR/HomebrewFormula.bak"; fi
-          brew install --formula "$TAP_DIR/Formula/gcl27.rb"
-          if [ -d "$SRC_TAP_DIR/Formula.bak" ]; then mv "$SRC_TAP_DIR/Formula.bak" "$SRC_TAP_DIR/Formula"; fi
-          if [ -d "$SRC_TAP_DIR/HomebrewFormula.bak" ]; then mv "$SRC_TAP_DIR/HomebrewFormula.bak" "$SRC_TAP_DIR/HomebrewFormula"; fi
-
       - name: Download Core State Artifact
         uses: actions/download-artifact@v4
         with:
@@ -212,7 +87,7 @@ jobs:
       - name: Verify Book Regression Subset
         env:
           HOMEBREW_ACL2_BUILD: "books"
-          HOMEBREW_ACL2_ICF: "${{github.workspace}}/acl2-core-${{ matrix.arch }}.tar.gz"
+          HOMEBREW_ACL2_ICF: "${{ github.workspace }}/acl2-core-${{ matrix.arch }}.tar.gz"
           HOMEBREW_ACL2_OCF: "acl2-books-${{ matrix.arch }}-1.tar.gz"
         run: |
           brew install --formula --verbose --build-from-source "cammgh/math/acl2-gcl"
@@ -224,13 +99,10 @@ jobs:
           name: acl2-books-state-${{ matrix.arch }}-1
           path: acl2-books-${{ matrix.arch }}-1.tar.gz
 
-      # --- DEB_BUG TRACE ARCHIVE ---
       - name: Open Debug SSH Session on Failure
         if: failure()
         uses: owenthereal/action-upterm@v1
-        with:
-          # Explicitly force a raw bash process instead of tmux
-          upterm-command: /bin/bash --noprofile --norc
+        with: upterm-command: /bin/bash --noprofile --norc
 
   books1:
     needs: books
@@ -254,40 +126,6 @@ jobs:
       - name: Set up Homebrew Framework
         uses: Homebrew/actions/setup-homebrew@main
 
-      # --- LAYER 2: DERIVATIVE BRANCHES LOGIC (DOWNLOAD GCL27 & COMPILE DERIVATIVES) ---
-      - name: Download Precompiled GCL27 from Main Branch
-        uses: dawidd6/action-download-artifact@v9
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: main
-          workflow: tests.yaml
-          name: gcl27-binary-${{ matrix.os }}-${{ matrix.arch }}
-          workflow_conclusion: success
-          path: ./
-        continue-on-error: true # Falls back to source if no artifact exists yet
-
-      - name: Install Local GCL27 Binary
-        if: github.ref_name != 'main'
-        run: |
-          BOTTLE_FILE=$(ls -1 gcl27*z | head -n 1)
-          [ "$BOTTLE_FILE" != "" ] || false
-          BOTTLE_ARCH=$(echo "$BOTTLE_FILE" | grep -oE '(arm64_tahoe|tahoe)\.bottle' | cut -d'.' -f1)
-          brew tap-new local/math
-          brew trust local/math
-          TAP_DIR=$(brew --repository local/math)
-          SRC_TAP_DIR=$(brew --repository cammgh/math 2>/dev/null || echo "")
-          cp ./Formula/gcl27.rb "$TAP_DIR/Formula/gcl27.rb"
-          BOTTLE_SHA=$(shasum -a 256 $BOTTLE_FILE | awk '{print $1}')
-          cp $BOTTLE_FILE $TAP_DIR/$(echo $BOTTLE_FILE | sed 's,--,-,1')
-          cd $TAP_DIR
-          sed -i '' "s@root_url .*@root_url \"file://$TAP_DIR\"@g" Formula/gcl27.rb
-          sed -i '' "s/# sha256 cellar.*/sha256 cellar: :any, $BOTTLE_ARCH: \"${BOTTLE_SHA}\"/g" Formula/gcl27.rb
-          if [ -d "$SRC_TAP_DIR/Formula" ]; then mv "$SRC_TAP_DIR/Formula" "$SRC_TAP_DIR/Formula.bak"; fi
-          if [ -d "$SRC_TAP_DIR/HomebrewFormula" ]; then mv "$SRC_TAP_DIR/HomebrewFormula" "$SRC_TAP_DIR/HomebrewFormula.bak"; fi
-          brew install --formula "$TAP_DIR/Formula/gcl27.rb"
-          if [ -d "$SRC_TAP_DIR/Formula.bak" ]; then mv "$SRC_TAP_DIR/Formula.bak" "$SRC_TAP_DIR/Formula"; fi
-          if [ -d "$SRC_TAP_DIR/HomebrewFormula.bak" ]; then mv "$SRC_TAP_DIR/HomebrewFormula.bak" "$SRC_TAP_DIR/HomebrewFormula"; fi
-
       - name: Download Core State Artifact
         uses: actions/download-artifact@v4
         with:
@@ -308,13 +146,10 @@ jobs:
           name: acl2-books-state-${{ matrix.arch }}-2
           path: acl2-books-${{ matrix.arch }}-2.tar.gz
 
-      # --- DEB_BUG TRACE ARCHIVE ---
       - name: Open Debug SSH Session on Failure
         if: failure()
         uses: owenthereal/action-upterm@v1
-        with:
-          # Explicitly force a raw bash process instead of tmux
-          upterm-command: /bin/bash --noprofile --norc
+        with: upterm-command: /bin/bash --noprofile --norc
 
   books2:
     needs: books1
@@ -338,40 +173,6 @@ jobs:
       - name: Set up Homebrew Framework
         uses: Homebrew/actions/setup-homebrew@main
 
-      # --- LAYER 2: DERIVATIVE BRANCHES LOGIC (DOWNLOAD GCL27 & COMPILE DERIVATIVES) ---
-      - name: Download Precompiled GCL27 from Main Branch
-        uses: dawidd6/action-download-artifact@v9
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: main
-          workflow: tests.yaml
-          name: gcl27-binary-${{ matrix.os }}-${{ matrix.arch }}
-          workflow_conclusion: success
-          path: ./
-        continue-on-error: true # Falls back to source if no artifact exists yet
-
-      - name: Install Local GCL27 Binary
-        if: github.ref_name != 'main'
-        run: |
-          BOTTLE_FILE=$(ls -1 gcl27*z | head -n 1)
-          [ "$BOTTLE_FILE" != "" ] || false
-          BOTTLE_ARCH=$(echo "$BOTTLE_FILE" | grep -oE '(arm64_tahoe|tahoe)\.bottle' | cut -d'.' -f1)
-          brew tap-new local/math
-          brew trust local/math
-          TAP_DIR=$(brew --repository local/math)
-          SRC_TAP_DIR=$(brew --repository cammgh/math 2>/dev/null || echo "")
-          cp ./Formula/gcl27.rb "$TAP_DIR/Formula/gcl27.rb"
-          BOTTLE_SHA=$(shasum -a 256 $BOTTLE_FILE | awk '{print $1}')
-          cp $BOTTLE_FILE $TAP_DIR/$(echo $BOTTLE_FILE | sed 's,--,-,1')
-          cd $TAP_DIR
-          sed -i '' "s@root_url .*@root_url \"file://$TAP_DIR\"@g" Formula/gcl27.rb
-          sed -i '' "s/# sha256 cellar.*/sha256 cellar: :any, $BOTTLE_ARCH: \"${BOTTLE_SHA}\"/g" Formula/gcl27.rb
-          if [ -d "$SRC_TAP_DIR/Formula" ]; then mv "$SRC_TAP_DIR/Formula" "$SRC_TAP_DIR/Formula.bak"; fi
-          if [ -d "$SRC_TAP_DIR/HomebrewFormula" ]; then mv "$SRC_TAP_DIR/HomebrewFormula" "$SRC_TAP_DIR/HomebrewFormula.bak"; fi
-          brew install --formula "$TAP_DIR/Formula/gcl27.rb"
-          if [ -d "$SRC_TAP_DIR/Formula.bak" ]; then mv "$SRC_TAP_DIR/Formula.bak" "$SRC_TAP_DIR/Formula"; fi
-          if [ -d "$SRC_TAP_DIR/HomebrewFormula.bak" ]; then mv "$SRC_TAP_DIR/HomebrewFormula.bak" "$SRC_TAP_DIR/HomebrewFormula"; fi
-
       - name: Download Core State Artifact
         uses: actions/download-artifact@v4
         with:
@@ -392,18 +193,15 @@ jobs:
           name: acl2-books-state-${{ matrix.arch }}-3
           path: acl2-books-${{ matrix.arch }}-3.tar.gz
 
-      # --- DEB_BUG TRACE ARCHIVE ---
       - name: Open Debug SSH Session on Failure
         if: failure()
         uses: owenthereal/action-upterm@v1
-        with:
-          # Explicitly force a raw bash process instead of tmux
-          upterm-command: /bin/bash --noprofile --norc
+        with: upterm-command: /bin/bash --noprofile --norc
 
-  # Stage 3: Collect artifacts, combine, and execute final install
-  finalize_install:
+
+  build:
     needs: books2
-    if: github.ref_name == 'acl2'
+    if: always() && ((github.ref_name == 'acl2' && needs.books2.result == 'success')||(github.ref_name != 'acl2'))
     strategy:
       matrix:
         include:
@@ -423,57 +221,68 @@ jobs:
       - name: Set up Homebrew Framework
         uses: Homebrew/actions/setup-homebrew@main
 
-      # --- LAYER 2: DERIVATIVE BRANCHES LOGIC (DOWNLOAD GCL27 & COMPILE DERIVATIVES) ---
-      - name: Download Precompiled GCL27 from Main Branch
-        uses: dawidd6/action-download-artifact@v9
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: main
-          workflow: tests.yaml
-          name: gcl27-binary-${{ matrix.os }}-${{ matrix.arch }}
-          workflow_conclusion: success
-          path: ./
-        continue-on-error: true # Falls back to source if no artifact exists yet
-
-      - name: Install Local GCL27 Binary
-        if: github.ref_name != 'main'
+      - name: Extract Dynamic Version Tag
+        id: get_version
         run: |
-          BOTTLE_FILE=$(ls -1 gcl27*z | head -n 1)
-          [ "$BOTTLE_FILE" != "" ] || false
-          BOTTLE_ARCH=$(echo "$BOTTLE_FILE" | grep -oE '(arm64_tahoe|tahoe)\.bottle' | cut -d'.' -f1)
-          brew tap-new local/math
-          brew trust local/math
-          TAP_DIR=$(brew --repository local/math)
-          SRC_TAP_DIR=$(brew --repository cammgh/math 2>/dev/null || echo "")
-          cp ./Formula/gcl27.rb "$TAP_DIR/Formula/gcl27.rb"
-          BOTTLE_SHA=$(shasum -a 256 $BOTTLE_FILE | awk '{print $1}')
-          cp $BOTTLE_FILE $TAP_DIR/$(echo $BOTTLE_FILE | sed 's,--,-,1')
-          cd $TAP_DIR
-          sed -i '' "s@root_url .*@root_url \"file://$TAP_DIR\"@g" Formula/gcl27.rb
-          sed -i '' "s/# sha256 cellar.*/sha256 cellar: :any, $BOTTLE_ARCH: \"${BOTTLE_SHA}\"/g" Formula/gcl27.rb
-          if [ -d "$SRC_TAP_DIR/Formula" ]; then mv "$SRC_TAP_DIR/Formula" "$SRC_TAP_DIR/Formula.bak"; fi
-          if [ -d "$SRC_TAP_DIR/HomebrewFormula" ]; then mv "$SRC_TAP_DIR/HomebrewFormula" "$SRC_TAP_DIR/HomebrewFormula.bak"; fi
-          brew install --formula "$TAP_DIR/Formula/gcl27.rb"
-          if [ -d "$SRC_TAP_DIR/Formula.bak" ]; then mv "$SRC_TAP_DIR/Formula.bak" "$SRC_TAP_DIR/Formula"; fi
-          if [ -d "$SRC_TAP_DIR/HomebrewFormula.bak" ]; then mv "$SRC_TAP_DIR/HomebrewFormula.bak" "$SRC_TAP_DIR/HomebrewFormula"; fi
+          FN="${{ github.ref_name }}"
+          if [ "$FN" != "gcl27" ] ; then FN="$FN-gcl"; fi
+          echo "fn=${FN}" >> $GITHUB_OUTPUT
+          VERSION=$(grep -E '^[[:space:]]*version[[:space:]]+' Formula/$FN.rb | awk -F'"' '{print $2}')
+          echo "Extracted Version: $VERSION"
+          echo "tag_name=v${VERSION}" >> $GITHUB_OUTPUT
+
+      - name: Compile
+        if: github.ref_name != 'acl2'
+        run: |
+          FN="${{ steps.get_version.outputs.fn }}"
+          brew audit --formula "cammgh/math/$FN" --online || echo "Audit warning, proceeding"
+          brew install --formula --verbose --build-bottle "cammgh/math/$FN"
+          brew test "cammgh/math/$FN"
 
       - name: Download Final Books Artifacts
+        if: github.ref_name == 'acl2'
         uses: actions/download-artifact@v4
         with:
           name: acl2-books-state-${{ matrix.arch }}-3
 
       - name: Reassemble Workspace and Install
+        if: github.ref_name == 'acl2'
         env:
           HOMEBREW_ACL2_BUILD: "install"
-          HOMEBREW_ACL2_ICF: "${{github.workspace}}/acl2-books-${{ matrix.arch }}-3.tar.gz"
+          HOMEBREW_ACL2_ICF: "${{ github.workspace }}/acl2-books-${{ matrix.arch }}-3.tar.gz"
         run: |
-          brew install --formula --verbose --build-from-source "cammgh/math/acl2-gcl"
+          brew install --formula --verbose --build-bottle "cammgh/math/acl2-gcl"
           brew test "cammgh/math/acl2-gcl"
 
-      # --- DEB_BUG TRACE ARCHIVE ---
+      - name: Bottle
+        run: |
+          TAG="${{ steps.get_version.outputs.tag_name }}"
+          brew bottle --root-url="https://github.com/cammgh/homebrew-math/releases/download/${TAG}" "cammgh/math/${{ steps.get_version.outputs.fn }}"
+
+      - name: Deploy Bottles to GitHub Releases
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.get_version.outputs.tag_name }}
+          name: "Precompiled Binaries (${{ steps.get_version.outputs.tag_name }})"
+          body: "Automated binary asset engine distributions"
+          draft: false
+          prerelease: false
+          files: |
+            ${{ steps.get_version.outputs.fn }}-*.bottle.tar.gz
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Merge Bottle Hashes and Update Repository
+        run: |
+          brew bottle --merge ${{ steps.get_version.outputs.fn }}-*.bottle.json
+
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add Formula/${{ steps.get_version.outputs.fn }}.rb
+          git commit -m "${{ steps.get_version.outputs.fn }}: update bottle hashes via dynamic production builder"
+          git push origin HEAD:${{ github.ref_name }}
+
       - name: Open Debug SSH Session on Failure
         if: failure()
         uses: owenthereal/action-upterm@v1
-        with:
-          # Explicitly force a raw bash process instead of tmux
-          upterm-command: /bin/bash --noprofile --norc
+        with: upterm-command: /bin/bash --noprofile --norc
