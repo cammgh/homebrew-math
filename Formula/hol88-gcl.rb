@@ -76,7 +76,7 @@ class Hol88Gcl < Formula
                awk '{gsub("/?usr/","",$2);printf("mkdir -p #{prefix}/%s && cp -r %s #{prefix}/%s\\n",$2,$1,$2)}' $i | bash -x
            done
            for i in debian/*.links; do
-               awk '{gsub("/?usr/","",$0);printf("mkdir -p `dirname #{prefix}/%s` && ln -snf #{prefix}/%s #{prefix}/%s\\n",$1,$2)}' $i | bash -x
+               awk '{gsub("/?usr/","",$0);printf("mkdir -p `dirname #{prefix}/%s` && ln -snf #{prefix}/%s #{prefix}/%s\\n",$2,$1,$2)}' $i | bash -x
            done
            mv #{prefix}/bin/hol88.sh #{prefix}/bin/hol88
     SHELL
