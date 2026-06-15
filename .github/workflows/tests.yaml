@@ -278,12 +278,9 @@ jobs:
 
       - name: Merge Bottle Hashes and Update Repository
         run: |
-          brew bottle --merge --write ${{ steps.get_version.outputs.fn }}*.bottle.json
-
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add Formula/${{ steps.get_version.outputs.fn }}.rb
-          git commit -m "${{ steps.get_version.outputs.fn }}: update bottle hashes via dynamic production builder"
+          brew bottle --merge --write ${{ steps.get_version.outputs.fn }}*.bottle.json
           git push origin HEAD:${{ github.ref_name }}
 
       - name: Open Debug SSH Session on Failure
