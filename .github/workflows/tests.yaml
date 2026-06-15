@@ -54,7 +54,8 @@ jobs:
       - name: Open Debug SSH Session on Failure
         if: failure()
         uses: owenthereal/action-upterm@v1
-        with: upterm-command: /bin/bash --noprofile --norc
+        with:
+          upterm-command: /bin/bash --noprofile --norc
 
 
   books:
@@ -102,7 +103,8 @@ jobs:
       - name: Open Debug SSH Session on Failure
         if: failure()
         uses: owenthereal/action-upterm@v1
-        with: upterm-command: /bin/bash --noprofile --norc
+        with:
+          upterm-command: /bin/bash --noprofile --norc
 
   books1:
     needs: books
@@ -149,7 +151,8 @@ jobs:
       - name: Open Debug SSH Session on Failure
         if: failure()
         uses: owenthereal/action-upterm@v1
-        with: upterm-command: /bin/bash --noprofile --norc
+        with:
+          upterm-command: /bin/bash --noprofile --norc
 
   books2:
     needs: books1
@@ -196,7 +199,8 @@ jobs:
       - name: Open Debug SSH Session on Failure
         if: failure()
         uses: owenthereal/action-upterm@v1
-        with: upterm-command: /bin/bash --noprofile --norc
+        with:
+          upterm-command: /bin/bash --noprofile --norc
 
 
   build:
@@ -285,4 +289,5 @@ jobs:
       - name: Open Debug SSH Session on Failure
         if: failure()
         uses: owenthereal/action-upterm@v1
-        with: upterm-command: /bin/bash --noprofile --norc
+        with:
+          upterm-command: /bin/bash --noprofile --norc
