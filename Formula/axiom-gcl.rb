@@ -8,6 +8,8 @@ class AxiomGcl < Formula
 
   #conflicts_with "axiom", because: "both install a 'axiom' executable"
 
+  env :std
+
   depends_on "cammgh/math/gcl27"
   depends_on "texlive"
   depends_on "gawk"  => :build
