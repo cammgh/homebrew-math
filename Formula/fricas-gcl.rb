@@ -6,6 +6,12 @@ class FricasGcl < Formula
   version "1.3.12-2"
   sha256 "33201f9f56c20b1266d38f5290efe7486a38422ea90f707f0345f6a589e31c8d"
 
+  bottle do
+    root_url "https://github.com/cammgh/homebrew-math/releases/download/v1.3.12-2"
+    sha256 cellar: :any, arm64_tahoe: "4517c36bc165a91679a177af5a2689a873bf9424c0274e76ec561a16fcdd7005"
+    sha256 cellar: :any, tahoe:       "4296ed23af11d2fa1a9f11e0c2c517e9db6d1e5673c27099c63cb26c9f68e467"
+  end
+
   conflicts_with "fricas", because: "both install a 'fricas' executable"
 
   env :std
