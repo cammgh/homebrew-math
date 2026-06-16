@@ -8,6 +8,8 @@ class MaximaGcl < Formula
 
   conflicts_with "maxima", because: "both install a 'maxima' executable"
 
+  env :std
+
   depends_on "cammgh/math/gcl27"
 
   depends_on "gnuplot"
