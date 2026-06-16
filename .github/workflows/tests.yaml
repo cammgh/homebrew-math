@@ -202,7 +202,7 @@ jobs:
 
   build:
     needs: books2
-    if: always() && ((github.ref_name == 'acl2' && needs.books2.result == 'success')||(github.ref_name != 'acl2'))
+    if: (github.ref_name == 'acl2' && needs.books2.result == 'success')||(github.ref_name != 'acl2')
     strategy:
       matrix:
         include:
