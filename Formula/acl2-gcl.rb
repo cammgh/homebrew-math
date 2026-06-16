@@ -8,6 +8,8 @@ class Acl2Gcl < Formula
 
   #conflicts_with "acl2", because: "both install a 'acl2' executable"
 
+  env :std
+
   depends_on "cammgh/math/gcl27"
   depends_on "texlive"
   depends_on "gawk"  => :build
