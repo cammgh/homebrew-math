@@ -8,6 +8,8 @@ class Hol88Gcl < Formula
 
   #conflicts_with "hol88", because: "both install a 'hol88' executable"
 
+  env :std
+
   depends_on "cammgh/math/gcl27"
   depends_on "texlive"
   depends_on "gawk"  => :build
