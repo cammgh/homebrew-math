@@ -262,6 +262,9 @@ jobs:
         run: |
           TAG="${{ steps.get_version.outputs.tag_name }}"
           brew bottle --json --root-url="https://github.com/cammgh/homebrew-math/releases/download/${TAG}" "cammgh/math/${{ steps.get_version.outputs.fn }}"
+          FN="${{ steps.get_version.outputs.fn }}"
+          sed -i '' "s,${FN}--,${FN}-,g" *--*json
+          for i in *--*; do mv $i $(echo $i | sed 's,--,-,1'); done
 
       - name: Deploy Bottles to GitHub Releases
         uses: softprops/action-gh-release@v2

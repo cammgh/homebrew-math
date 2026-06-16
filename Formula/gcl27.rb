@@ -9,7 +9,7 @@ class Gcl27 < Formula
 
   bottle do
     root_url "https://github.com/cammgh/homebrew-math/releases/download/v2.7.2prehb24"
-    sha256 cellar: :any, arm64_tahoe: "99cb3942aac26d3368edfa64ce5289b10ccc4b850c47336c5b9e076d73065128"
+    sha256 cellar: :any, arm64_tahoe: "44ed831446668f4703d576430d1020fbfbdb28e5a170dcabb77bd7251b059525"
   end
 
   #depends_on "gcc"
