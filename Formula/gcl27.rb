@@ -1,6 +1,6 @@
 class Gcl27 < Formula
   desc "GNU Common Lisp"
-  homepage "https://gnu.org/software/gcl"
+  homepage "https://www.gnu.org/software/gcl"
   url "git://git.sv.gnu.org/gcl.git",
       tag:      "Version_2_7_2pre_homebrew24", # Replace with your target version tag
       revision: "dc0d83d13a255e6a37cdef4b8b57878ac2065754" # Replace with the exact Git commit hash
@@ -8,9 +8,8 @@ class Gcl27 < Formula
   license "GPL-2.0-or-later"
 
   bottle do
-    root_url "https://localhost"
-    # sha256 cellar: :any, arm64_sequoia: "all"
-    # The sha256 lines for arm64_sequoia or x86_64 will be injected dynamically by CI
+    root_url "https://github.com/cammgh/homebrew-math/releases/download/v2.7.2prehb24"
+    sha256 cellar: :any, arm64_tahoe: "99cb3942aac26d3368edfa64ce5289b10ccc4b850c47336c5b9e076d73065128"
   end
 
   #depends_on "gcc"
