@@ -283,7 +283,7 @@ jobs:
           brew bottle --merge --write ${{ steps.get_version.outputs.fn }}*.bottle.json
           git push origin HEAD:${{ github.ref_name }}
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Open Debug SSH Session on Failure
         if: failure()
