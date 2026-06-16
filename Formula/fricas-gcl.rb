@@ -8,6 +8,8 @@ class FricasGcl < Formula
 
   conflicts_with "fricas", because: "both install a 'fricas' executable"
 
+  env :std
+
   depends_on "cammgh/math/gcl27"
 
   resource "debian-patches" do
