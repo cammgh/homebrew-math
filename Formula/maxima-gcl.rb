@@ -6,6 +6,12 @@ class MaximaGcl < Formula
   version "5.49.0+dsfg-4"
   sha256 "6d401a4aa307cd3a5a9cadca4fa96c4ef0e24ff95a18bb6a8f803e3d2114adee"
 
+  bottle do
+    root_url "https://github.com/cammgh/homebrew-math/releases/download/v5.49.0+dsfg-4"
+    sha256 arm64_tahoe: "1dc60e3c476527145681f9adbff9552fd60db9b19090ba09dd445319bceb320c"
+    sha256 tahoe:       "9eb050f6bf6f525d25e402f578f512347704865edc1e288a9dfa75b842c73c3f"
+  end
+
   conflicts_with "maxima", because: "both install a 'maxima' executable"
 
   env :std
