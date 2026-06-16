@@ -11,9 +11,6 @@ on:
       - hol88
   pull_request:
 
-permissions:
-  contents: write
-
 jobs:
   core:
     if: github.ref_name == 'acl2'
@@ -217,6 +214,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     env:
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+    permissions:
+      contents: write
 
     steps:
       - name: Checkout Repository
@@ -279,15 +278,48 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Upload JSON Metadata
+        uses: actions/upload-artifact@v4
+        with:
+          name: bottle-json-${{ matrix.os }}
+          path: "*.bottle.json"
+
+      - name: Open Debug SSH Session on Failure
+        if: failure()
+        uses: owenthereal/action-upterm@v1
+        with:
+          upterm-command: /bin/bash --noprofile --norc
+
+  merge_push:
+    needs: build
+    if: always() && !failure() && !cancelled()
+    runs-on: macos-26
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Homebrew Framework
+        uses: Homebrew/actions/setup-homebrew@main
+
+      - name: Download All JSON Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: bottle-json-*
+          merge-multiple: true # Dumps all json files into the same folder
+
       - name: Merge Bottle Hashes and Update Repository
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git config --global url."https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/".insteadOf "https://github.com/"
-          brew bottle --merge --write ${{ steps.get_version.outputs.fn }}*.bottle.json
+          FN="${{ github.ref_name }}"
+          if [ "$FN" != "gcl27" ] ; then FN="$FN-gcl"; fi
+          brew bottle --merge --write ${FN}*.bottle.json
           git push origin HEAD:${{ github.ref_name }}
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Open Debug SSH Session on Failure
         if: failure()
