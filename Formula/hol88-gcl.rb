@@ -7,9 +7,9 @@ class Hol88Gcl < Formula
   sha256 "8e2a4f83cea20d0cf2416f7d55c951498f6c807b03ebc9381a02fa4c81c5da69"
 
   bottle do
-    root_url "https://github.com/cammgh/homebrew-math/releases/download/v2.02.19940316dfsg-9"
-    sha256 cellar: :any, arm64_tahoe: "491b94b70696f4e36711c2bf551077ab0698db18e98f8cf2afe7a1cf8fabb876"
-    sha256 cellar: :any, tahoe:       "ec128ea29a3f364313536eea1e9c3416c5d1e30680c0b9ff4f8841abf2314e74"
+    root_url "https://github.com/cammgh/homebrew-math/releases/download/hol88-gcl-2.02.19940316dfsg-9"
+    sha256 cellar: :any, arm64_tahoe: "42f684b3ee8ef0d522ef31ea6036e687c2c7dd64e45f12ae71c3869511a6e689"
+    sha256 cellar: :any, tahoe:       "ef1ac24a9a919cd4c0c35052f7e40ef5ec33636e60cf3177c187fbcc58bc95c2"
   end
 
   #conflicts_with "hol88", because: "both install a 'hol88' executable"
