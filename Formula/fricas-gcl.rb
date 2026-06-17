@@ -2,9 +2,9 @@ class FricasGcl < Formula
   desc "Computer algebra system (GCL compiler backend)"
   homepage "https://sourceforge.io"
 
-  url "https://deb.debian.org/debian/pool/main/f/fricas/fricas_1.3.12.orig.tar.bz2"
-  version "1.3.12-2"
-  sha256 "33201f9f56c20b1266d38f5290efe7486a38422ea90f707f0345f6a589e31c8d"
+  url "https://deb.debian.org/debian/pool/main/f/fricas/fricas_1.3.13.orig.tar.bz2"
+  version "1.3.13-1"
+  sha256 "dd4d5e06db0ba4a43a5bfb64e94f6c8d4b10e68ac65a77556891a6b24af148a2"
 
   bottle do
     root_url "https://github.com/cammgh/homebrew-math/releases/download/v1.3.12-2"
@@ -19,8 +19,8 @@ class FricasGcl < Formula
   depends_on "cammgh/math/gcl27"
 
   resource "debian-patches" do
-    url "https://deb.debian.org/debian/pool/main/f/fricas/fricas_1.3.12-2.debian.tar.xz"
-    sha256 "8210d02714d58e365e18067153ff219c1e5e672726776947786f2b49f603d0c0"
+    url "https://deb.debian.org/debian/pool/main/f/fricas/fricas_1.3.13-1.debian.tar.xz"
+    sha256 "09523ba9702ed6b613868c7a6d8036e1aa0db767ec9bcb4b96cdda6776b6bca6"
   end
 
   def install
