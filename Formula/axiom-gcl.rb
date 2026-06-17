@@ -51,7 +51,6 @@ class AxiomGcl < Formula
     ENV.append "CFLAGS","-DSIGCLD=SIGCHLD -I#{buildpath}/include"
     ENV.append "CPPFLAGS","-DSIGCLD=SIGCHLD -I#{buildpath}/include"
     ENV.append "C_INCLUDE_PATH","#{buildpath}/include"
-    ENV["RC_CFLAGS"] = "-L#{Formula["libxpm"].opt_lib}"
     ENV.append "DEB_BUILD_OPTIONS","parallel=#{ENV.make_jobs}"
     ENV.prepend_path "PATH", Formula["findutils"].opt_libexec/"gnubin"
     ENV.prepend_path "PATH", buildpath/"bin"
@@ -70,6 +69,7 @@ class AxiomGcl < Formula
            sed -i '' 's/MYCOMBINE(i,j)/MYCOMBINE(int i,int j)/g' src/interp/cfuns.lisp.pamphlet
            sed -i '' 's/"int i,j;\"//g' src/interp/cfuns.lisp.pamphlet
            sed -i '' 's/"unsigned int i,j;\"//g' src/interp/cfuns.lisp.pamphlet
+           sed -i '' "s/-L/usr/X11R6/lib /-L/usr/X11R6/lib -L$(brew --prefix)/lib /g" Makefile.pamphlet
            gmake -f debian/rules -O configure
            gmake -f debian/rules -O build
            cp mnt/linux/bin/axiom int/sman
