@@ -3,7 +3,7 @@ class AxiomGcl < Formula
   homepage "https://sourceforge.io"
 
   url "https://deb.debian.org/debian/pool/main/a/axiom/axiom_20210105dp1.orig.tar.gz"
-  version "20210105dp1-4"
+  version "20210105dp1-5"
   sha256 "8f2b1d2cf26dcefd4e794fe2545982e4bc987b10a1945f70bd9f816df532ee17"
 
   #conflicts_with "axiom", because: "both install a 'axiom' executable"
@@ -22,8 +22,8 @@ class AxiomGcl < Formula
   #depends_on "gawk" => :build
 
   resource "debian-patches" do
-    url "https://deb.debian.org/debian/pool/main/a/axiom/axiom_20210105dp1-4.debian.tar.xz"
-    sha256 "1e1583f6e7a1493f1545796d6732d470610b7d6e84a4dfcdf1112a6cf13cd040"
+    url "https://deb.debian.org/debian/pool/main/a/axiom/axiom_20210105dp1-5.debian.tar.xz"
+    sha256 "82c00d38c2fa406ef27b7bf2d7b605b0f96255fd1a0faf0197ea69df3fcfcdf9"
   end
 
   def install
