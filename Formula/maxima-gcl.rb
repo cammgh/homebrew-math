@@ -6,7 +6,15 @@ class MaximaGcl < Formula
   version "5.49.0+dsfg-4"
   sha256 "6d401a4aa307cd3a5a9cadca4fa96c4ef0e24ff95a18bb6a8f803e3d2114adee"
 
+  bottle do
+    root_url "https://github.com/cammgh/homebrew-math/releases/download/maxima-gcl-5.49.0+dsfg-4"
+    sha256 arm64_tahoe: "8e55e6a9c163956dc2cff2cc6c27dbde385cdf881823665ec23bc85de2e5b9b7"
+    sha256 tahoe:       "420d99d9e4dee4c0f262bafd50b5359b260c8848efd020e88ec9a675f81d472e"
+  end
+
   conflicts_with "maxima", because: "both install a 'maxima' executable"
+
+  env :std
 
   depends_on "cammgh/math/gcl27"
 
