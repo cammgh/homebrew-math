@@ -3,10 +3,18 @@ class AxiomGcl < Formula
   homepage "https://sourceforge.io"
 
   url "https://deb.debian.org/debian/pool/main/a/axiom/axiom_20210105dp1.orig.tar.gz"
-  version "20210105dp1-4"
+  version "20210105dp1-5"
   sha256 "8f2b1d2cf26dcefd4e794fe2545982e4bc987b10a1945f70bd9f816df532ee17"
 
+  bottle do
+    root_url "https://github.com/cammgh/homebrew-math/releases/download/axiom-gcl-20210105dp1-5"
+    sha256 cellar: :any, arm64_tahoe: "d637fde288769425f74f03718cfdf2b8f78a62c57e023c2defd8190c87e67ace"
+    sha256 cellar: :any, tahoe:       "30f3ee229a45a4be044527009f155142270ef4cd96fde1b1992408ef0a7aa811"
+  end
+
   #conflicts_with "axiom", because: "both install a 'axiom' executable"
+
+  env :std
 
   depends_on "cammgh/math/gcl27"
   depends_on "texlive"
@@ -20,8 +28,8 @@ class AxiomGcl < Formula
   #depends_on "gawk" => :build
 
   resource "debian-patches" do
-    url "https://deb.debian.org/debian/pool/main/a/axiom/axiom_20210105dp1-4.debian.tar.xz"
-    sha256 "1e1583f6e7a1493f1545796d6732d470610b7d6e84a4dfcdf1112a6cf13cd040"
+    url "https://deb.debian.org/debian/pool/main/a/axiom/axiom_20210105dp1-5.debian.tar.xz"
+    sha256 "82c00d38c2fa406ef27b7bf2d7b605b0f96255fd1a0faf0197ea69df3fcfcdf9"
   end
 
   def install
@@ -67,25 +75,11 @@ class AxiomGcl < Formula
            sed -i '' 's/MYCOMBINE(i,j)/MYCOMBINE(int i,int j)/g' src/interp/cfuns.lisp.pamphlet
            sed -i '' 's/"int i,j;\"//g' src/interp/cfuns.lisp.pamphlet
            sed -i '' 's/"unsigned int i,j;\"//g' src/interp/cfuns.lisp.pamphlet
-           sed -i '' '/^$/d' src/interp/cfuns.lisp.pamphlet
+           sed -i '' "s,-L/usr/X11R6/lib ,-L/usr/X11R6/lib -L$(brew --prefix)/lib ,g" Makefile.pamphlet
            gmake -f debian/rules -O configure
            gmake -f debian/rules -O build
            cp mnt/linux/bin/axiom int/sman
            AXIOM=$(pwd)/mnt/linux make install DESTDIR="#{prefix}"
-           #mkdir #{prefix}/bin || true
-           #cp #{prefix}/mnt/linux/bin/axiom #{prefix}/bin
-           #gmake -f debian/rules install
-           #for i in debian/bin/axiom debian/bin/axiom-test; do
-           #    sed 's,/usr/lib/axiom,#{prefix}/lib/axiom,g' $i >$i.new
-           #    chmod +x $i.new
-           #    mv $i.new $i
-           #done
-           #for i in debian/*.install; do
-           #    awk '{gsub("usr/","",$2);printf("mkdir -p #{prefix}/%s && cp -r %s #{prefix}/%s\\n",$2,$1,$2)}' $i | bash -x
-           #done
-           #for i in debian/*.links; do
-           #    awk '{gsub("usr/","",$0);printf("ln -snf #{prefix}/%s #{prefix}/%s\\n",$1,$2)}' $i | bash -x
-           #done
     SHELL
   end
   test do
