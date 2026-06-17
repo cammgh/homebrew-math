@@ -6,6 +6,12 @@ class AxiomGcl < Formula
   version "20210105dp1-5"
   sha256 "8f2b1d2cf26dcefd4e794fe2545982e4bc987b10a1945f70bd9f816df532ee17"
 
+  bottle do
+    root_url "https://github.com/cammgh/homebrew-math/releases/download/axiom-gcl-20210105dp1-5"
+    sha256 cellar: :any, arm64_tahoe: "d637fde288769425f74f03718cfdf2b8f78a62c57e023c2defd8190c87e67ace"
+    sha256 cellar: :any, tahoe:       "30f3ee229a45a4be044527009f155142270ef4cd96fde1b1992408ef0a7aa811"
+  end
+
   #conflicts_with "axiom", because: "both install a 'axiom' executable"
 
   env :std
