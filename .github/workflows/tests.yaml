@@ -232,7 +232,7 @@ jobs:
           echo "fn=${FN}" >> $GITHUB_OUTPUT
           VERSION=$(grep -E '^[[:space:]]*version[[:space:]]+' Formula/$FN.rb | awk -F'"' '{print $2}')
           echo "Extracted Version: $VERSION"
-          echo "tag_name=v${VERSION}" >> $GITHUB_OUTPUT
+          echo "tag_name=${FN}-${VERSION}" >> $GITHUB_OUTPUT
 
       - name: Compile
         if: github.ref_name != 'acl2'
