@@ -6,6 +6,12 @@ class Acl2Gcl < Formula
   version "8.7+dfsg-2"
   sha256 "2f396e166c041d852b5974f2fd57bed5e22c282bf397c7e917d0065cb1a68dce"
 
+  bottle do
+    root_url "https://github.com/cammgh/homebrew-math/releases/download/v8.6+dfsg-3"
+    sha256 cellar: :any, arm64_tahoe: "0e80c21b535a196e45a8b54b681a007dcb006e12e6117d2db67e5750c971e460"
+    sha256 cellar: :any, tahoe:       "f934d9003399ec155331972e8a62b1f805a564a6bb349a2b153f94841d3b92a4"
+  end
+
   #conflicts_with "acl2", because: "both install a 'acl2' executable"
 
   env :std
