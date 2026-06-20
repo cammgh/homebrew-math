@@ -82,7 +82,10 @@ class Acl2Gcl < Formula
            j=\$!
            (sleep 19800; ! [ -e saved_acl2.ori ] || (cat debian/test.log >>debian/test.log.all; pkill -g \$(ps -p \$j -o pgid=); rm -f debian/test.log; mv saved_acl2.ori saved_acl2)) &
            k=\$!
-           if wait \$j; then kill \$k; else wait \$k; fi
+           wait \$j
+           kill \$k
+           echo diffout
+           [ ! -e books/projects/acl2-in-hol/tests/diffout ] || cat books/projects/acl2-in-hol/tests/diffout
            mkdir -p #{prefix}
            tar zcf #{prefix}/$HOMEBREW_ACL2_OCF .
       SHELL
