@@ -19,6 +19,7 @@ class Acl2Gcl < Formula
   depends_on "cammgh/math/gcl27"
   depends_on "texlive"
   depends_on "gawk"  => :build
+  depends_on "gnu-tar"  => :build
   depends_on "coreutils"  => :build
   depends_on "make" => :build
   depends_on "findutils" => :build
@@ -71,13 +72,13 @@ class Acl2Gcl < Formula
            sed -i '' 's,regression-fresh,regression,g' debian/rules
            gmake -O -f debian/rules debian/mini-proveall.out
            mkdir -p #{prefix}
-           tar zcf #{prefix}/$HOMEBREW_ACL2_OCF .
+           gtar --format=posix --atime-preserve zcf #{prefix}/$HOMEBREW_ACL2_OCF .
       SHELL
     end
 
     if ENV["HOMEBREW_ACL2_BUILD"] == "books"
       system <<~SHELL
-           tar zxf $HOMEBREW_ACL2_ICF
+           gtar zxf $HOMEBREW_ACL2_ICF
            gmake -O -f debian/rules debian/test.log &
            j=\$!
            (sleep 19800; ! [ -e saved_acl2.ori ] || (cat debian/test.log >>debian/test.log.all; pkill -g \$(ps -p \$j -o pgid=); rm -f debian/test.log; mv saved_acl2.ori saved_acl2)) &
@@ -87,15 +88,16 @@ class Acl2Gcl < Formula
            echo diffout
            [ ! -e books/projects/acl2-in-hol/tests/diffout ] || cat books/projects/acl2-in-hol/tests/diffout
            mkdir -p #{prefix}
-           tar zcf #{prefix}/$HOMEBREW_ACL2_OCF .
+           gtar --format=posix --atime-preserve zcf #{prefix}/$HOMEBREW_ACL2_OCF .
       SHELL
     end
 
     if ENV["HOMEBREW_ACL2_BUILD"] == "install"
       system <<~SHELL
-           tar zxf $HOMEBREW_ACL2_ICF
+           gtar zxf $HOMEBREW_ACL2_ICF
            mv debian/test.log.all debian/test.log
            touch debian/test.log infix-stamp build-stamp
+           rm -f debian/acl2.sh
            yes | gmake -f debian/rules install
            sed -i '' 's,/usr/lib/acl2,#{prefix}/lib/acl2,g' debian/acl2/usr/bin/acl2
            for i in $(find debian -type d -name usr); do mv $i/* $i/..; rmdir $i; done
