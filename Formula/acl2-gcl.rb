@@ -72,7 +72,7 @@ class Acl2Gcl < Formula
            sed -i '' 's,regression-fresh,regression,g' debian/rules
            gmake -O -f debian/rules debian/mini-proveall.out
            mkdir -p #{prefix}
-           gtar --format=posix --atime-preserve zcf #{prefix}/$HOMEBREW_ACL2_OCF .
+           gtar zcf #{prefix}/$HOMEBREW_ACL2_OCF --format=posix --atime-preserve .
       SHELL
     end
 
@@ -88,7 +88,7 @@ class Acl2Gcl < Formula
            echo diffout
            [ ! -e books/projects/acl2-in-hol/tests/diffout ] || cat books/projects/acl2-in-hol/tests/diffout
            mkdir -p #{prefix}
-           gtar --format=posix --atime-preserve zcf #{prefix}/$HOMEBREW_ACL2_OCF .
+           gtar zcf #{prefix}/$HOMEBREW_ACL2_OCF  --format=posix --atime-preserve .
       SHELL
     end
 
