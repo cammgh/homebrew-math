@@ -22,10 +22,12 @@ class Gcl27 < Formula
 
   depends_on "make" => :build
   depends_on "texinfo" => :build
+  depends_on "autoconf" => :build
+  depends_on "automake" => :build
 
   def install
     system <<~SHELL
-           ./git_touch
+           autoreconf
            ./configure --prefix=#{prefix} --with-lispdir=#{elisp}
            GCL_MULTIPROCESS_MEMORY_POOL=$(pwd) gmake -O
            gmake sb_ansi-tests/test_results
