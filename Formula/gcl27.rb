@@ -2,9 +2,9 @@ class Gcl27 < Formula
   desc "GNU Common Lisp"
   homepage "https://www.gnu.org/software/gcl"
   url "git://git.sv.gnu.org/gcl.git",
-      tag:      "Version_2_7_2pre_homebrew28",
-      revision: "add4ff03237e7a75454776ec8d9efebc3715fd1a"
-  version "2.7.2prehb28"
+      tag:      "Version_2_7_2pre_homebrew29",
+      revision: "4c8868804ebf03571653d8c331d47187493dcf18"
+  version "2.7.2prehb29"
   license "GPL-2.0-or-later"
 
   bottle do
