@@ -2,15 +2,15 @@ class Gcl27 < Formula
   desc "GNU Common Lisp"
   homepage "https://www.gnu.org/software/gcl"
   url "git://git.sv.gnu.org/gcl.git",
-      tag:      "Version_2_7_2pre28",
-      revision: "50e96687183214e8b6100f24447930ede6961df8"
-  version "2.7.2pre28"
+      tag:      "Version_2_7_2pre31",
+      revision: "5c285e3d6e9f923a0f1cf8ef0d21b65c54b738e1"
+  version "2.7.2pre31"
   license "GPL-2.0-or-later"
 
   bottle do
-    root_url "https://github.com/cammgh/homebrew-math/releases/download/gcl27-2.7.2pre28"
-    sha256               arm64_tahoe: "44f7100152310cd9f6900e403d098d1807f4213d9d77648bdae4ac2e09e585c1"
-    sha256 cellar: :any, tahoe:       "16574669899df14d332baaee76360ae82a00ce8752d397165d1757c97e7c57cc"
+    root_url "https://github.com/cammgh/homebrew-math/releases/download/gcl27-2.7.2prehb31"
+    sha256 arm64_tahoe: "1cfeab75d4d9c4be051750327faf070bb422de3ceed8af8b75dc11ce3b74ffd4"
+    sha256 tahoe:       "f8a4b16f27706ed9c647b17e069de791d43549588953ceb8501d0fb5dc70576b"
   end
 
   #depends_on "gcc"
@@ -22,10 +22,12 @@ class Gcl27 < Formula
 
   depends_on "make" => :build
   depends_on "texinfo" => :build
+  depends_on "autoconf" => :build
+  depends_on "automake" => :build
 
   def install
     system <<~SHELL
-           ./git_touch
+           autoreconf
            ./configure --prefix=#{prefix} --with-lispdir=#{elisp}
            GCL_MULTIPROCESS_MEMORY_POOL=$(pwd) gmake -O
            gmake sb_ansi-tests/test_results
