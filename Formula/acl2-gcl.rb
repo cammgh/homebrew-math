@@ -78,6 +78,9 @@ class Acl2Gcl < Formula
 
     if ENV["HOMEBREW_ACL2_BUILD"] == "books"
       system <<~SHELL
+           ! echo $HOMEBREW_ACL2_ICF | grep 1.tar.gz
+      SHELL
+      system <<~SHELL
            gtar zxf $HOMEBREW_ACL2_ICF
            gmake -O -f debian/rules debian/test.log &
            j=\$!
