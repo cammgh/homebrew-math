@@ -8,9 +8,9 @@ class Gcl27 < Formula
   license "GPL-2.0-or-later"
 
   bottle do
-    root_url "https://github.com/cammgh/homebrew-math/releases/download/gcl27-2.7.2pre32b"
-    sha256 arm64_tahoe: "ddce2d3d5453acfddb2cbea798f308c1bfa44b50e777039ca50afa6fbcd13b8a"
-    sha256 tahoe:       "589d8568e9bee5f6c95cb61c6703eed33ead62842d0e6405c47498454d4a81d9"
+    root_url "https://github.com/cammgh/homebrew-math/releases/download/gcl27-2.7.2pre33"
+    sha256 arm64_tahoe: "31c88c0011fbd41cd6450e4d5cbb67e99d0584116031d8af6e3717a7eba7c09d"
+    sha256 tahoe:       "4b9902870bde099e36dc25f796db605d4526e0fd8bca7a7d48acf5ee46d0bd29"
   end
 
   #depends_on "gcc"
