@@ -242,6 +242,13 @@ jobs:
           brew install --formula --verbose --build-bottle "cammgh/math/$FN"
           brew test "cammgh/math/$FN"
 
+      - name: Execute Full Upstream Testsuite (with 60-minute GitHub Timeout)
+        if: github.ref_name == 'maxima'
+        timeout-minutes: 60
+        run: |
+          GCL_MEM_MULTIPLE=1.0 maxima --batch-string="run_testsuite(share_tests=true);"
+          #false
+
       - name: Download Final Books Artifacts
         if: github.ref_name == 'acl2'
         uses: actions/download-artifact@v4
