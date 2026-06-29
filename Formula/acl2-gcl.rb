@@ -33,7 +33,7 @@ class Acl2Gcl < Formula
     ENV.append "DEB_BUILD_OPTIONS","parallel=#{ENV.make_jobs}"
     ENV.prepend_path "PATH", Formula["findutils"].opt_libexec/"gnubin"
     ENV.prepend_path "PATH", Formula["coreutils"].opt_libexec/"gnubin"
-    ENV.prepend_path "PATH", buildpath/"bin"
+    ENV.prepend_path "PATH", buildpath
 
     if ENV["HOMEBREW_ACL2_BUILD"] == "core"
       (buildpath/"debian").mkdir
@@ -56,7 +56,7 @@ class Acl2Gcl < Formula
         end
       end
 
-      system "false"
+      #system "false"
       system <<~SHELL
            for i in testdir testroot prep installdirs; do
                ln -s /usr/bin/true bin/dh_$i
@@ -65,7 +65,7 @@ class Acl2Gcl < Formula
            chmod +x bin/dh_install
            echo "for i in debian/*.links; do awk -v  p=\\${i%.links} '{\\$1=p \\"/\\" \\$1;\\$2=p \\"/\\" \\$2;printf(\\"mkdir -p `dirname %s` && ln -snfr %s %s%c\\",\\$2,\\$1,\\$2,10)}' \\$i |bash -x; done" >bin/dh_link
            chmod +x bin/dh_link
-           echo "#+x86_64(setq compiler::*opt-three* (concatenate (quote string) compiler::*opt-three* \\" -fno-jump-tables \\"))(si::save-system \\"bin/gcl27\\")" | gcl
+           echo "#+x86_64(setq compiler::*opt-three* (concatenate (quote string) compiler::*opt-three* \\" -fno-jump-tables \\"))(si::save-system \\"gcl27\\")" | gcl
            #ln -s $(which gcl) bin/gcl27
            echo "#+(and gcl no-sigfpe)(ignore-errors (si::flush-floating-point-exceptions nil nil (lambda nil nil)))" >>init.lisp
            sed -i '' 's,FINALDIR="/usr/share,FINALDIR="#{prefix}/share,g' debian/rules
