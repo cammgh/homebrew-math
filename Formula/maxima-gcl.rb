@@ -54,7 +54,7 @@ class MaximaGcl < Formula
       end
     end
 
-    system "false"
+    #system "false"
     system "autoreconf","-ivf"
     system <<~SHELL
            mkdir bin || true
