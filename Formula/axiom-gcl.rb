@@ -8,7 +8,8 @@ class AxiomGcl < Formula
 
   bottle do
     root_url "https://github.com/cammgh/homebrew-math/releases/download/axiom-gcl-20210105dp1-5"
-    sha256 cellar: :any, arm64_tahoe: "82973a13a745bd4a071fa829f18522e20abdd6673882f446a26d429ec18030f2"
+    sha256 cellar: :any, arm64_tahoe: "d80acadce0e879e78afd118d9d21110abe794b4b827ab2d842d1b4cee8efb264"
+    sha256 cellar: :any, tahoe:       "d6df49bb57c3d86bf60b48a263b44cb91efff47009033d09a71ca3fdc171a77e"
   end
 
   #conflicts_with "axiom", because: "both install a 'axiom' executable"
