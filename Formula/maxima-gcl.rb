@@ -8,8 +8,8 @@ class MaximaGcl < Formula
 
   bottle do
     root_url "https://github.com/cammgh/homebrew-math/releases/download/maxima-gcl-5.49.0+dsfg-4"
-    sha256 arm64_tahoe: "5f5b964eed7a2009789c5411790eee6e48dbb18bcece6d2fffab1de2c545310c"
-    sha256 tahoe:       "b19a3b5cd6d873184f4e68f83f5297e10c943f2c766d96f8da21d317c552554b"
+    sha256 arm64_tahoe: "8782774d18e5e7d26730eca9505014cb32b93d98f243320c13c9326b47b7738b"
+    sha256 tahoe:       "c8603503bc2561c2c5e17cc54a14c2fe57beef9b14d447dc1091f225798c7ca3"
   end
 
   conflicts_with "maxima", because: "both install a 'maxima' executable"
