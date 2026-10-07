@@ -239,6 +239,9 @@ jobs:
         run: |
           FN="${{ steps.get_version.outputs.fn }}"
           brew audit --formula "cammgh/math/$FN" --online || echo "Audit warning, proceeding"
+          if [ "${{ matrix.arch }}" = "x86_64" ]; then
+            brew install --build-from-source --only-dependencies "cammgh/math/$FN"
+          fi
           brew install --formula --verbose --build-bottle "cammgh/math/$FN"
           brew test "cammgh/math/$FN"
 
