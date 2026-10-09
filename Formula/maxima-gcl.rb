@@ -3,11 +3,11 @@ class MaximaGcl < Formula
   homepage "https://sourceforge.io"
   
   url "https://deb.debian.org/debian/pool/main/m/maxima/maxima_5.49.0+dsfg.orig.tar.gz"
-  version "5.49.0+dsfg-4"
+  version "5.49.0+dsfg-6"
   sha256 "6d401a4aa307cd3a5a9cadca4fa96c4ef0e24ff95a18bb6a8f803e3d2114adee"
 
   bottle do
-    root_url "https://github.com/cammgh/homebrew-math/releases/download/maxima-gcl-5.49.0+dsfg-4"
+    root_url "https://github.com/cammgh/homebrew-math/releases/download/maxima-gcl-5.49.0+dsfg-6"
     sha256 arm64_tahoe: "8782774d18e5e7d26730eca9505014cb32b93d98f243320c13c9326b47b7738b"
     sha256 tahoe:       "c8603503bc2561c2c5e17cc54a14c2fe57beef9b14d447dc1091f225798c7ca3"
   end
@@ -25,7 +25,7 @@ class MaximaGcl < Formula
   depends_on "texinfo" => :build
 
   resource "debian-patches" do
-    url "https://deb.debian.org/debian/pool/main/m/maxima/maxima_5.49.0+dsfg-4.debian.tar.xz"
+    url "https://deb.debian.org/debian/pool/main/m/maxima/maxima_5.49.0+dsfg-6.debian.tar.xz"
     sha256 "8261d8d916b6168acba394b0f74df5ee51316a75d1a57463d324f41a398db2f5"
   end
 
