@@ -3,11 +3,11 @@ class AxiomGcl < Formula
   homepage "https://sourceforge.io"
 
   url "https://deb.debian.org/debian/pool/main/a/axiom/axiom_20210105dp1.orig.tar.gz"
-  version "20210105dp1-5"
+  version "20210105dp1-6"
   sha256 "8f2b1d2cf26dcefd4e794fe2545982e4bc987b10a1945f70bd9f816df532ee17"
 
   bottle do
-    root_url "https://github.com/cammgh/homebrew-math/releases/download/axiom-gcl-20210105dp1-5"
+    root_url "https://github.com/cammgh/homebrew-math/releases/download/axiom-gcl-20210105dp1-6"
     sha256 cellar: :any, arm64_tahoe: "fa835956a111d1fbc515d8d54107dc62955b07a84615c75289de9e27d9f89b1c"
     sha256 cellar: :any, tahoe:       "2c45ebebbac64c0706538cbca6cef67e21da4f416faebebfff7f81f67026f84a"
   end
@@ -28,7 +28,7 @@ class AxiomGcl < Formula
   #depends_on "gawk" => :build
 
   resource "debian-patches" do
-    url "https://deb.debian.org/debian/pool/main/a/axiom/axiom_20210105dp1-5.debian.tar.xz"
+    url "https://deb.debian.org/debian/pool/main/a/axiom/axiom_20210105dp1-6.debian.tar.xz"
     sha256 "82c00d38c2fa406ef27b7bf2d7b605b0f96255fd1a0faf0197ea69df3fcfcdf9"
   end
 
