@@ -3,7 +3,7 @@ class Acl2Gcl < Formula
   homepage "https://www.cs.utexas.edu/users/moore/acl2"
 
   url "https://deb.debian.org/debian/pool/main/a/acl2/acl2_8.7+dfsg.orig.tar.gz"
-  version "8.7+dfsg-2"
+  version "8.7+dfsg-3"
   sha256 "2f396e166c041d852b5974f2fd57bed5e22c282bf397c7e917d0065cb1a68dce"
 
   bottle do
@@ -25,7 +25,7 @@ class Acl2Gcl < Formula
   depends_on "findutils" => :build
 
   resource "debian-patches" do
-    url "https://deb.debian.org/debian/pool/main/a/acl2/acl2_8.7+dfsg-2.debian.tar.xz"
+    url "https://deb.debian.org/debian/pool/main/a/acl2/acl2_8.7+dfsg-3.debian.tar.xz"
     sha256 "2e02df6148679e2efc60510c698bf41bd44681fb6a740f581f21e94c5bd2eefa"
   end
 
