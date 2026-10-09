@@ -3,11 +3,11 @@ class FricasGcl < Formula
   homepage "https://sourceforge.io"
 
   url "https://deb.debian.org/debian/pool/main/f/fricas/fricas_1.3.13.orig.tar.bz2"
-  version "1.3.13-1"
+  version "1.3.13-3"
   sha256 "dd4d5e06db0ba4a43a5bfb64e94f6c8d4b10e68ac65a77556891a6b24af148a2"
 
   bottle do
-    root_url "https://github.com/cammgh/homebrew-math/releases/download/fricas-gcl-1.3.13-1"
+    root_url "https://github.com/cammgh/homebrew-math/releases/download/fricas-gcl-1.3.13-3"
     sha256 cellar: :any, arm64_tahoe: "819b8b2015ffd884c4c7ff3733dc6086f2db970fa0375f923d076d71a803f5bc"
     sha256 cellar: :any, tahoe:       "82bdfe520d84f3ad20022707149c6a5a95150a72e5d60c145dc3243dc83e36a0"
   end
@@ -19,7 +19,7 @@ class FricasGcl < Formula
   depends_on "cammgh/math/gcl27"
 
   resource "debian-patches" do
-    url "https://deb.debian.org/debian/pool/main/f/fricas/fricas_1.3.13-1.debian.tar.xz"
+    url "https://deb.debian.org/debian/pool/main/f/fricas/fricas_1.3.13-3.debian.tar.xz"
     sha256 "09523ba9702ed6b613868c7a6d8036e1aa0db767ec9bcb4b96cdda6776b6bca6"
   end
 
