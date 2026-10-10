@@ -26,7 +26,7 @@ class MaximaGcl < Formula
 
   resource "debian-patches" do
     url "https://deb.debian.org/debian/pool/main/m/maxima/maxima_5.49.0+dsfg-6.debian.tar.xz"
-    sha256 "8261d8d916b6168acba394b0f74df5ee51316a75d1a57463d324f41a398db2f5"
+    sha256 "b5ba8a234bd2046d0f7bd058a8ce7c53c064cc52a4c24005baecdfa504e0fca2"
   end
 
   patch :DATA
