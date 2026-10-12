@@ -18,7 +18,7 @@ class Hol88Gcl < Formula
   depends_on "cammgh/math/gcl27"
   depends_on "texlive"
   depends_on "gawk"  => :build
-  #depends_on "coreutils"  => :build
+  # depends_on "coreutils"  => :build
   #depends_on "ghostscript"
   #depends_on "libxt"
   #depends_on "libxpm"
