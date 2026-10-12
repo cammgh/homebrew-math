@@ -20,7 +20,7 @@ class FricasGcl < Formula
 
   resource "debian-patches" do
     url "https://deb.debian.org/debian/pool/main/f/fricas/fricas_1.3.13-3.debian.tar.xz"
-    sha256 "09523ba9702ed6b613868c7a6d8036e1aa0db767ec9bcb4b96cdda6776b6bca6"
+    sha256 "acf13b762544b1fb1deff2ab4ccb2e5e80f7f2c7d4434d6af31f7e067105e29a"
   end
 
   def install
