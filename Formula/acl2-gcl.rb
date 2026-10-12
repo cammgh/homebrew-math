@@ -26,7 +26,7 @@ class Acl2Gcl < Formula
 
   resource "debian-patches" do
     url "https://deb.debian.org/debian/pool/main/a/acl2/acl2_8.7+dfsg-3.debian.tar.xz"
-    sha256 "2e02df6148679e2efc60510c698bf41bd44681fb6a740f581f21e94c5bd2eefa"
+    sha256 "771e8768905b50e9f6383bcd22ebd95260dfcfa2827c84bcd380978809ebb2e7"
   end
 
   def install
