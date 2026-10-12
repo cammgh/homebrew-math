@@ -29,7 +29,7 @@ class AxiomGcl < Formula
 
   resource "debian-patches" do
     url "https://deb.debian.org/debian/pool/main/a/axiom/axiom_20210105dp1-6.debian.tar.xz"
-    sha256 "82c00d38c2fa406ef27b7bf2d7b605b0f96255fd1a0faf0197ea69df3fcfcdf9"
+    sha256 "596cc9b9aaa9a21d40abff041a0c969f47c7cde6bc17e41de32dc806e3c0d92e"
   end
 
   def install
