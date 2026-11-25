@@ -3,7 +3,7 @@ class Gcl27 < Formula
   homepage "https://www.gnu.org/software/gcl"
   url "git://git.sv.gnu.org/gcl.git",
       tag:      "Version_2_7_2pre45",
-      revision: "66c9c8502dfcd11027fa5ac0ed5c81bea6522f87"
+      revision: "830e8434616e4822bb481104cac603005cd1fa35"
   version "2.7.2pre45"
   license "GPL-2.0-or-later"
 
