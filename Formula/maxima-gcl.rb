@@ -2,9 +2,9 @@ class MaximaGcl < Formula
   desc "Computer algebra system (GCL compiler backend)"
   homepage "https://sourceforge.io"
   
-  url "https://deb.debian.org/debian/pool/main/m/maxima/maxima_5.49.0+dsfg.orig.tar.gz"
-  version "5.49.0+dsfg-6"
-  sha256 "6d401a4aa307cd3a5a9cadca4fa96c4ef0e24ff95a18bb6a8f803e3d2114adee"
+  url "https://deb.debian.org/debian/pool/main/m/maxima/maxima_5.50.0.orig.tar.gz"
+  version "5.50.0-1"
+  sha256 "0bc4b5e11fe153ef20b24a3a816b668ece5378cc738fa24ca426b62fd6d8fc37"
 
   bottle do
     root_url "https://github.com/cammgh/homebrew-math/releases/download/maxima-gcl-5.49.0+dsfg-6"
@@ -25,11 +25,11 @@ class MaximaGcl < Formula
   depends_on "texinfo" => :build
 
   resource "debian-patches" do
-    url "https://deb.debian.org/debian/pool/main/m/maxima/maxima_5.49.0+dsfg-6.debian.tar.xz"
-    sha256 "b5ba8a234bd2046d0f7bd058a8ce7c53c064cc52a4c24005baecdfa504e0fca2"
+    url "https://deb.debian.org/debian/pool/main/m/maxima/maxima_5.50.0-1.debian.tar.xz"
+    sha256 "17eb76653269797147518cf03a7801aeac120794991c31af39259376fe43c167"
   end
 
-  patch :DATA
+#  patch :DATA
 
   def install
     ENV.deparallelize
@@ -70,46 +70,46 @@ class MaximaGcl < Formula
   end
 end
 
-__END__
---- a/src/defint.lisp
-+++ b/src/defint1.lisp
-@@ -1358,10 +1358,10 @@
+# __END__
+# --- a/src/defint.lisp
+# +++ b/src/defint1.lisp
+# @@ -1358,10 +1358,10 @@
 
 
- (defun evenfn (e ivar)
--  (let ((temp (m+ (m- e)
--		  (cond ((atom ivar)
--			 ($substitute (m- ivar) ivar e))
--			(t ($ratsubst (m- ivar) ivar e))))))
-+  (let* ((a (atom ivar))
-+        (s (when a ($substitute (m- ivar) ivar e)))
-+        (r (unless a ($ratsubst (m- ivar) ivar e)))
-+        (temp (m+ (m- e) (if a s r))))
-     (cond ((zerop1 temp)
-           t)
-          ((zerop1 (sratsimp temp))
-@@ -1369,9 +1369,10 @@
-          (t nil))))
+#  (defun evenfn (e ivar)
+# -  (let ((temp (m+ (m- e)
+# -		  (cond ((atom ivar)
+# -			 ($substitute (m- ivar) ivar e))
+# -			(t ($ratsubst (m- ivar) ivar e))))))
+# +  (let* ((a (atom ivar))
+# +        (s (when a ($substitute (m- ivar) ivar e)))
+# +        (r (unless a ($ratsubst (m- ivar) ivar e)))
+# +        (temp (m+ (m- e) (if a s r))))
+#      (cond ((zerop1 temp)
+#            t)
+#           ((zerop1 (sratsimp temp))
+# @@ -1369,9 +1369,10 @@
+#           (t nil))))
 
- (defun oddfn (e ivar)
--  (let ((temp (m+ e (cond ((atom ivar)
--			   ($substitute (m- ivar) ivar e))
--			  (t ($ratsubst (m- ivar) ivar e))))))
-+  (let* ((a (atom ivar))
-+        (s (when a ($substitute (m- ivar) ivar e)))
-+        (r (unless a ($ratsubst (m- ivar) ivar e)))
-+        (temp (m+ e (if a s r))))
-     (cond ((zerop1 temp)
-           t)
-          ((zerop1 (sratsimp temp))
---- a/doc/info/build_index.pl  2026-06-14 12:54:18
-+++ b/doc/info/build_index.pl1   2026-06-14 12:54:56
-@@ -252,7 +252,7 @@
+#  (defun oddfn (e ivar)
+# -  (let ((temp (m+ e (cond ((atom ivar)
+# -			   ($substitute (m- ivar) ivar e))
+# -			  (t ($ratsubst (m- ivar) ivar e))))))
+# +  (let* ((a (atom ivar))
+# +        (s (when a ($substitute (m- ivar) ivar e)))
+# +        (r (unless a ($ratsubst (m- ivar) ivar e)))
+# +        (temp (m+ e (if a s r))))
+#      (cond ((zerop1 temp)
+#            t)
+#           ((zerop1 (sratsimp temp))
+# --- a/doc/info/build_index.pl  2026-06-14 12:54:18
+# +++ b/doc/info/build_index.pl1   2026-06-14 12:54:56
+# @@ -252,7 +252,7 @@
 
- #        Construct hashtables from the lists given above.
+#  #        Construct hashtables from the lists given above.
 
--print "(load-info-hashtables (maxima::maxima-load-pathname-directory) deffn-defvr-pairs section-pairs))\n";
-+print "(clrhash cl-info::*info-tables*)(load-info-hashtables (maxima::maxima-load-pathname-directory) deffn-defvr-pairs section-pairs))\n";
+# -print "(load-info-hashtables (maxima::maxima-load-pathname-directory) deffn-defvr-pairs section-pairs))\n";
+# +print "(clrhash cl-info::*info-tables*)(load-info-hashtables (maxima::maxima-load-pathname-directory) deffn-defvr-pairs section-pairs))\n";
 
- # (2.3)  Do we have any items or sections?
- #
+#  # (2.3)  Do we have any items or sections?
+#  #
