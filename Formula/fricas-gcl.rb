@@ -8,8 +8,8 @@ class FricasGcl < Formula
 
   bottle do
     root_url "https://github.com/cammgh/homebrew-math/releases/download/fricas-gcl-1.3.13-3"
-    sha256 cellar: :any, arm64_tahoe: "b01bc244bc4e2ca1c04ef80aee37a10e6c424a69e03fe470202d45b4576a391e"
-    sha256 cellar: :any, tahoe:       "cab9fd28ee2785b49d3fc9f3ecc64de5b14edfa0e0724b2aa160f17aac669fd6"
+    sha256 cellar: :any, arm64_tahoe: "fbf98ef6cb8075efdb68517b7243e2d520cf2cd3a740b9973a92a450fddc1f19"
+    sha256 cellar: :any, tahoe:       "7399faf35d6892620aa0c3dc3e668c6afb11582b94a1599bf709671b774b5a1c"
   end
 
   conflicts_with "fricas", because: "both install a 'fricas' executable"
