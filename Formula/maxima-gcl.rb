@@ -29,7 +29,7 @@ class MaximaGcl < Formula
     sha256 "17eb76653269797147518cf03a7801aeac120794991c31af39259376fe43c167"
   end
 
-#  patch :DATA
+  patch :DATA
 
   def install
     ENV.deparallelize
@@ -70,46 +70,35 @@ class MaximaGcl < Formula
   end
 end
 
-# __END__
-# --- a/src/defint.lisp
-# +++ b/src/defint1.lisp
-# @@ -1358,10 +1358,10 @@
-
-
-#  (defun evenfn (e ivar)
-# -  (let ((temp (m+ (m- e)
-# -		  (cond ((atom ivar)
-# -			 ($substitute (m- ivar) ivar e))
-# -			(t ($ratsubst (m- ivar) ivar e))))))
-# +  (let* ((a (atom ivar))
-# +        (s (when a ($substitute (m- ivar) ivar e)))
-# +        (r (unless a ($ratsubst (m- ivar) ivar e)))
-# +        (temp (m+ (m- e) (if a s r))))
-#      (cond ((zerop1 temp)
-#            t)
-#           ((zerop1 (sratsimp temp))
-# @@ -1369,9 +1369,10 @@
-#           (t nil))))
-
-#  (defun oddfn (e ivar)
-# -  (let ((temp (m+ e (cond ((atom ivar)
-# -			   ($substitute (m- ivar) ivar e))
-# -			  (t ($ratsubst (m- ivar) ivar e))))))
-# +  (let* ((a (atom ivar))
-# +        (s (when a ($substitute (m- ivar) ivar e)))
-# +        (r (unless a ($ratsubst (m- ivar) ivar e)))
-# +        (temp (m+ e (if a s r))))
-#      (cond ((zerop1 temp)
-#            t)
-#           ((zerop1 (sratsimp temp))
-# --- a/doc/info/build_index.pl  2026-06-14 12:54:18
-# +++ b/doc/info/build_index.pl1   2026-06-14 12:54:56
-# @@ -252,7 +252,7 @@
-
-#  #        Construct hashtables from the lists given above.
-
-# -print "(load-info-hashtables (maxima::maxima-load-pathname-directory) deffn-defvr-pairs section-pairs))\n";
-# +print "(clrhash cl-info::*info-tables*)(load-info-hashtables (maxima::maxima-load-pathname-directory) deffn-defvr-pairs section-pairs))\n";
-
-#  # (2.3)  Do we have any items or sections?
-#  #
+__END__
+--- a/src/defint.lisp
++++ b/src/defint.lisp1
+@@ -1444,10 +1444,10 @@
+ 
+ 
+ (defun evenfn (e ivar)
+-  (let ((temp (m+ (m- e)
+-		  (cond ((atom ivar)
+-			 ($substitute (m- ivar) ivar e))
+-			(t ($ratsubst (m- ivar) ivar e))))))
++  (let* ((a (atom ivar))
++        (s (when a ($substitute (m- ivar) ivar e)))
++        (r (unless a ($ratsubst (m- ivar) ivar e)))
++        (temp (m+ (m- e) (if a s r))))
+     (cond ((zerop1 temp)
+ 	   t)
+ 	  ((zerop1 (sratsimp temp))
+@@ -1455,9 +1455,10 @@
+ 	  (t nil))))
+ 
+ (defun oddfn (e ivar)
+-  (let ((temp (m+ e (cond ((atom ivar)
+-			   ($substitute (m- ivar) ivar e))
+-			  (t ($ratsubst (m- ivar) ivar e))))))
++  (let* ((a (atom ivar))
++        (s (when a ($substitute (m- ivar) ivar e)))
++        (r (unless a ($ratsubst (m- ivar) ivar e)))
++        (temp (m+ e (if a s r))))
+     (cond ((zerop1 temp)
+ 	   t)
+ 	  ((zerop1 (sratsimp temp))
