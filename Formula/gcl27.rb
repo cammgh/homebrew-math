@@ -2,15 +2,15 @@ class Gcl27 < Formula
   desc "GNU Common Lisp"
   homepage "https://www.gnu.org/software/gcl"
   url "git://git.sv.gnu.org/gcl.git",
-      tag:      "Version_2_7_2pre38",
-      revision: "ea0fc878f4b18e16e6ae12d4f45a41d59cbec259"
-  version "2.7.2pre38"
+      tag:      "Version_2_7_2pre45",
+      revision: "830e8434616e4822bb481104cac603005cd1fa35"
+  version "2.7.2pre45"
   license "GPL-2.0-or-later"
 
   bottle do
-    root_url "https://github.com/cammgh/homebrew-math/releases/download/gcl27-2.7.2pre38"
-    sha256 arm64_tahoe: "55f310d8638bb7a261059473eaf793d5dfcf5fc7f3e534d03778de41f0d04ccc"
-    sha256 tahoe:       "f07508795b2a95acaabe951bd60468e7151720e9683724a9ff14de41502c75bf"
+    root_url "https://github.com/cammgh/homebrew-math/releases/download/gcl27-2.7.2pre45"
+    sha256 arm64_tahoe: "5f92d1dd8e9f79344a8aa1ab662fda613b8f636488923838e2d63725ecaac3c0"
+    sha256 tahoe:       "f85fcf01de39f8a18bb7874761afaf6b20bd91abdbccc9f00f51d9e69da1dd8a"
   end
 
   #depends_on "gcc"
