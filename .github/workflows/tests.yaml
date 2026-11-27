@@ -236,7 +236,7 @@ jobs:
         if: matrix.arch == 'x86_64'
         run: |
           sudo mkdir -p /usr/local/opt/openjdk
-          sudo ln -sfn "$(usr/libexec/java_home)" /usr/local/opt/openjdk
+          sudo ln -sfn "$(/usr/libexec/java_home)" /usr/local/opt/openjdk
 
       - name: Extract Dynamic Version Tag
         id: get_version
