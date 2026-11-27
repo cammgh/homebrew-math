@@ -232,11 +232,20 @@ jobs:
           java-version: '21'
           architecture: x86_64
 
-      - name: Symlink Environment Java Runtime (x86_64 Only)
+      - name: Stub Out OpenJDK Package Graph (x86_64 Only)
         if: matrix.arch == 'x86_64'
         run: |
-          sudo mkdir -p /usr/local/opt/openjdk
-          sudo ln -sfn "$(/usr/libexec/java_home)" /usr/local/opt/openjdk
+          # 1. Establish the explicit standard cellar directory paths
+          sudo mkdir -p /usr/local/Cellar/openjdk/21
+          sudo mkdir -p /usr/local/opt
+          # 2. Build out the nested folder footprint that defines a native Keg mapping
+          JVM_HOME=$(/usr/libexec/java_home)
+          sudo cp -R "$JVM_HOME/" /usr/local/Cellar/openjdk/21/
+          # 3. Inject dummy tracking assets so brew validates the folder as a built Keg
+          sudo mkdir -p /usr/local/Cellar/openjdk/21/.brew
+          echo '{"formula": "openjdk", "version": "21"}' | sudo tee /usr/local/Cellar/openjdk/21/.brew/openjdk.json > /dev/null
+          # 4. Generate the direct opt linkage route
+          sudo ln -sfn /usr/local/Cellar/openjdk/21 /usr/local/opt/openjdk
 
       - name: Extract Dynamic Version Tag
         id: get_version
