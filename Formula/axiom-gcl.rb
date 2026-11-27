@@ -16,7 +16,7 @@ class AxiomGcl < Formula
   env :std
 
   depends_on "cammgh/math/gcl27"
-  depends_on "texlive"
+  depends_on "texlive" if ENV["HOMEBREW_NO_INTEL_TEX"].nil?
   depends_on "gawk"  => :build
   depends_on "coreutils"  => :build
   depends_on "ghostscript"

@@ -224,29 +224,6 @@ jobs:
       - name: Set up Homebrew Framework
         uses: Homebrew/actions/setup-homebrew@main
 
-      - name: Satiate OpenJDK Bottleneck (x86_64 Only)
-        if: matrix.arch == 'x86_64'
-        uses: actions/setup-java@v4
-        with:
-          distribution: 'temurin'
-          java-version: '21'
-          architecture: x86_64
-
-      - name: Stub Out OpenJDK Package Graph (x86_64 Only)
-        if: matrix.arch == 'x86_64'
-        run: |
-          # 1. Establish the explicit standard cellar directory paths
-          sudo mkdir -p /usr/local/Cellar/openjdk/21
-          sudo mkdir -p /usr/local/opt
-          # 2. Build out the nested folder footprint that defines a native Keg mapping
-          JVM_HOME=$(/usr/libexec/java_home)
-          sudo cp -R "$JVM_HOME/" /usr/local/Cellar/openjdk/21/
-          # 3. Inject dummy tracking assets so brew validates the folder as a built Keg
-          sudo mkdir -p /usr/local/Cellar/openjdk/21/.brew
-          echo '{"formula": "openjdk", "version": "21"}' | sudo tee /usr/local/Cellar/openjdk/21/.brew/openjdk.json > /dev/null
-          # 4. Generate the direct opt linkage route
-          sudo ln -sfn /usr/local/Cellar/openjdk/21 /usr/local/opt/openjdk
-
       - name: Extract Dynamic Version Tag
         id: get_version
         run: |
@@ -259,10 +236,16 @@ jobs:
 
       - name: Compile
         if: github.ref_name != 'acl2'
+        env:
+          # On Intel, hide the texlive formula dependency from Homebrew's graph solver
+          HOMEBREW_NO_INTEL_TEX: ${{ matrix.arch == 'x86_64' && 'true' || '' }}
         run: |
           FN="${{ steps.get_version.outputs.fn }}"
           brew audit --formula "cammgh/math/$FN" --online || echo "Audit warning, proceeding"
           if [ "${{ matrix.arch }}" = "x86_64" ]; then
+            brew install --cask mactex-no-gui
+            echo "/Library/TeX/texbin" >> $GITHUB_PATH
+            export PATH="/Library/TeX/texbin:$PATH"
             brew install --build-from-source --only-dependencies "cammgh/math/$FN"
           fi
           brew install --formula --verbose --build-bottle "cammgh/math/$FN"
