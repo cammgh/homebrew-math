@@ -224,6 +224,20 @@ jobs:
       - name: Set up Homebrew Framework
         uses: Homebrew/actions/setup-homebrew@main
 
+      - name: Satiate OpenJDK Bottleneck (x86_64 Only)
+        if: matrix.arch == 'x86_64'
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+          architecture: x86_64
+
+      - name: Symlink Environment Java Runtime (x86_64 Only)
+        if: matrix.arch == 'x86_64'
+        run: |
+          sudo mkdir -p /usr/local/opt/openjdk
+          sudo ln -sfn "$(usr/libexec/java_home)" /usr/local/opt/openjdk
+
       - name: Extract Dynamic Version Tag
         id: get_version
         run: |
