@@ -3,21 +3,20 @@ class AxiomGcl < Formula
   homepage "https://sourceforge.io"
 
   url "https://deb.debian.org/debian/pool/main/a/axiom/axiom_20210105dp1.orig.tar.gz"
-  version "20210105dp1-5"
+  version "20210105dp1-6"
   sha256 "8f2b1d2cf26dcefd4e794fe2545982e4bc987b10a1945f70bd9f816df532ee17"
 
   bottle do
-    root_url "https://github.com/cammgh/homebrew-math/releases/download/axiom-gcl-20210105dp1-5"
-    sha256 cellar: :any, arm64_tahoe: "d637fde288769425f74f03718cfdf2b8f78a62c57e023c2defd8190c87e67ace"
-    sha256 cellar: :any, tahoe:       "30f3ee229a45a4be044527009f155142270ef4cd96fde1b1992408ef0a7aa811"
+    root_url "https://github.com/cammgh/homebrew-math/releases/download/axiom-gcl-20210105dp1-6"
+    sha256 cellar: :any, tahoe: "acc6618752e3645685b547c102ee6e9c3d85bf99bb76662f7ee75eb7c5be1ba7"
   end
 
-  #conflicts_with "axiom", because: "both install a 'axiom' executable"
+  #conflicts_with  "axiom", because: "both install a 'axiom' executable"
 
   env :std
 
   depends_on "cammgh/math/gcl27"
-  depends_on "texlive"
+  depends_on "texlive" if ENV["HOMEBREW_NO_INTEL_TEX"].nil?
   depends_on "gawk"  => :build
   depends_on "coreutils"  => :build
   depends_on "ghostscript"
@@ -28,8 +27,8 @@ class AxiomGcl < Formula
   #depends_on "gawk" => :build
 
   resource "debian-patches" do
-    url "https://deb.debian.org/debian/pool/main/a/axiom/axiom_20210105dp1-5.debian.tar.xz"
-    sha256 "82c00d38c2fa406ef27b7bf2d7b605b0f96255fd1a0faf0197ea69df3fcfcdf9"
+    url "https://deb.debian.org/debian/pool/main/a/axiom/axiom_20210105dp1-6.debian.tar.xz"
+    sha256 "596cc9b9aaa9a21d40abff041a0c969f47c7cde6bc17e41de32dc806e3c0d92e"
   end
 
   def install
