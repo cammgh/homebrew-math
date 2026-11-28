@@ -11,7 +11,7 @@ class AxiomGcl < Formula
     sha256 cellar: :any, tahoe: "acc6618752e3645685b547c102ee6e9c3d85bf99bb76662f7ee75eb7c5be1ba7"
   end
 
-  #conflicts_with "axiom", because: "both install a 'axiom' executable"
+  #conflicts_with  "axiom", because: "both install a 'axiom' executable"
 
   env :std
 
